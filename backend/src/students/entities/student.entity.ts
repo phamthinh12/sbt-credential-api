@@ -8,4 +8,5 @@ export class Student {
   status: 'active' | 'inactive' | 'graduated';
   createdAt: Date;
   updatedAt: Date;
+  schoolId: string;
 }

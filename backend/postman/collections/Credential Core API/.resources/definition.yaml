@@ -1,0 +1,3 @@
+$kind: collection
+variables:
+  baseUrl: https://sbt-credential-api.onrender.com

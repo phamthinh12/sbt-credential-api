@@ -3,6 +3,7 @@ import { Student } from '../../students/entities/student.entity';
 export class Credential {
   id: string;
   studentId: string;
+  schoolId: string;
   student: Student;
   name: string;
   description: string | null;
@@ -15,4 +16,9 @@ export class Credential {
   issuedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+  
+  classification?: string; 
+  major?: string;
+  issuerName?: string;
+  expiryDate?: Date | string;
 }

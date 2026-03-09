@@ -1,0 +1,14 @@
+# Use this workspace to collaborate
+workspace:
+  id: 6f1751e3-bd63-47f3-8e5f-39b9fe047126
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+cloudResources:
+  collections:
+    ..\postman\collections\Credential Core API: 50926416-70765c34-7c44-4266-b8f0-75027cfd2ab6
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/
