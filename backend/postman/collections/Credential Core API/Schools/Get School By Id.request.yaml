@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get School By Id
+url: "{{baseUrl}}/schools/school-001"
+method: GET
+order: 2604747214141016
