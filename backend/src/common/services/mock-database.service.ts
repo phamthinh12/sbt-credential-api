@@ -15,6 +15,8 @@ export class MockDatabaseService {
     this.seedData();
   }
 
+  private schools: any[] = [];
+
   private seedData() {
     // 1. Đồng bộ User
     this.users = [
@@ -54,6 +56,10 @@ export class MockDatabaseService {
         createdAt: new Date('2024-01-16'),
         updatedAt: new Date('2024-01-16'),
       },
+    ];
+    this.schools = [
+      { id: 'school-001', name: 'Đại học Bách Khoa', walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1', isActive: true },
+      { id: 'school-002', name: 'Đại học Kinh Tế', walletAddress: '0x8Ba1f109551bD432803012645Ac136ddd64DBA7', isActive: true },
     ];
 
     // 3. Đồng bộ Credentials (Thêm metadata Blockchain)
@@ -103,12 +109,12 @@ export class MockDatabaseService {
 
     // 4. Đồng bộ Registration Requests
     this.registrationRequests = [
-      { 
-        id: 'req-001', 
-        walletAddress: '0x9999999999999999999999999999999999999999', 
-        type: 'school', 
-        schoolName: 'Đại học FPT', 
-        status: 'pending' 
+      {
+        id: 'req-001',
+        walletAddress: '0x9999999999999999999999999999999999999999',
+        type: 'school',
+        schoolName: 'Đại học FPT',
+        status: 'pending'
       },
     ];
   }
@@ -228,11 +234,19 @@ export class MockDatabaseService {
   updateCredential(id: string, data: Partial<Credential>): Credential | undefined {
     const index = this.credentials.findIndex(c => c.id === id);
     if (index === -1) return undefined;
-    this.credentials[index] = { 
-      ...this.credentials[index], 
-      ...data, 
-      updatedAt: new Date() 
+    this.credentials[index] = {
+      ...this.credentials[index],
+      ...data,
+      updatedAt: new Date()
     };
     return this.findCredentialById(id);
   }
+  findAllSchools() {
+    return this.schools;
+  }
+
+  findSchoolById(id: string) {
+    return this.schools.find(s => s.id === id);
+  }
 }
+
