@@ -7,11 +7,11 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private mockDb: MockDatabaseService,
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.mockDb.findUserByUsername(username);
-    if (user && user.username === 'admin' && user.passwordHash === password) {
+    if (user && user.username === 'admin' && password === 'password123') {
       return { id: user.id, username: user.username, role: user.role };
     }
     return null;
@@ -20,7 +20,7 @@ export class AuthService {
   async login(loginData: { username: string; password: string }) {
 
     const user = await this.validateUser(loginData.username, loginData.password);
-    if (!user ) {
+    if (!user) {
       throw new UnauthorizedException('Tài khoản hoặc mật khẩu không chính xác');
     }
     const payload = { username: user.username, sub: user.id, role: user.role };
