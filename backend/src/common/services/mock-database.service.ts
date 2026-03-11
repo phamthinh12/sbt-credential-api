@@ -25,7 +25,16 @@ export class MockDatabaseService {
         id: 'super-admin-001',
         username: 'admin',
         passwordHash: '$2b$10$xVqYLGQKkL8ZqJ3Q5kHzKOqY3Q5kHzKOqY3Q5kHzKOqY3Q5kHzKOq',
-        role: 'super_admin' as any, // Khớp role super_admin
+        role: 'super_admin' as any,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 'school-admin-001',
+        username: 'school_admin',
+        passwordHash: '$2b$10$xVqYLGQKkL8ZqJ3Q5kHzKOqY3Q5kHzKOqY3Q5kHzKOqY3Q5kHzKOq',
+        role: 'school_admin' as any,
+        schoolId: 'school-001',
         createdAt: new Date(),
         updatedAt: new Date(),
       },

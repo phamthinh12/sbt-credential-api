@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -14,10 +14,11 @@ export class StudentsController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách sinh viên (API #9) - School/Admin' })
+  @ApiOperation({ summary: 'Lấy danh sách sinh viên (API #9) - Admin: xem tất cả, School: xem của trường' })
   @ApiQuery({ name: 'schoolId', required: false })
-  findAll(@Query('schoolId') schoolId?: string) {
-    return this.studentsService.findAll(schoolId);
+  findAll(@Request() req: any, @Query('schoolId') schoolId?: string) {
+    const user = req.user;
+    return this.studentsService.findAll(user, schoolId);
   }
 
   @Get(':id')
@@ -31,8 +32,9 @@ export class StudentsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'school_admin')
   @ApiOperation({ summary: 'Tạo sinh viên mới - School/Admin' })
-  create(@Body() createStudentDto: CreateStudentDto) {
-    return this.studentsService.create(createStudentDto);
+  create(@Request() req: any, @Body() createStudentDto: CreateStudentDto) {
+    const user = req.user;
+    return this.studentsService.create(createStudentDto, user);
   }
 
   @Put(':id')

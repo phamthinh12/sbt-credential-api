@@ -1,16 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Student } from './entities/student.entity';
 import { MockDatabaseService } from '../common/services/mock-database.service';
+
+interface User {
+  userId: string;
+  username: string;
+  role: string;
+  schoolId?: string;
+}
 
 @Injectable()
 export class StudentsService {
   constructor(private mockDb: MockDatabaseService) {}
 
-  async findAll(schoolId?: string): Promise<{ data: Student[] }> {
+  async findAll(user: User, schoolId?: string): Promise<{ data: Student[] }> {
     let students = this.mockDb.findAllStudents();
     
-    if (schoolId) {
-      students = students.filter(s => s.schoolId === schoolId);
+    if (user.role === 'admin') {
+      if (schoolId) {
+        students = students.filter(s => s.schoolId === schoolId);
+      }
+    } else if (user.role === 'school_admin') {
+      if (!user.schoolId) {
+        throw new ForbiddenException('School Admin cần có schoolId');
+      }
+      students = students.filter(s => s.schoolId === user.schoolId);
     }
     
     return { data: students };
@@ -24,7 +38,10 @@ export class StudentsService {
     return { data: student };
   }
 
-  async create(data: Partial<Student>): Promise<{ data: Student }> {
+  async create(data: Partial<Student>, user: User): Promise<{ data: Student }> {
+    if (user.role === 'school_admin' && user.schoolId) {
+      data.schoolId = user.schoolId;
+    }
     const student = this.mockDb.createStudent(data);
     return { data: student };
   }

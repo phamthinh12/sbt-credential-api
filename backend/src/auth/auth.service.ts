@@ -11,8 +11,8 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.mockDb.findUserByUsername(username);
-    if (user && user.username === 'admin' && password === 'password123') {
-      return { id: user.id, username: user.username, role: user.role };
+    if (user && user.passwordHash && password === 'password123') {
+      return { id: user.id, username: user.username, role: user.role, schoolId: user.schoolId };
     }
     return null;
   }
@@ -23,13 +23,19 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Tài khoản hoặc mật khẩu không chính xác');
     }
-    const payload = { username: user.username, sub: user.id, role: user.role };
+    const payload = { 
+      username: user.username, 
+      sub: user.id, 
+      role: user.role,
+      schoolId: user.schoolId 
+    };
     return {
       access_token: this.jwtService.sign(payload),
       user: {
         id: user.id,
         username: user.username,
         role: user.role,
+        schoolId: user.schoolId,
       },
     };
   }
