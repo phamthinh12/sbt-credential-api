@@ -5,7 +5,7 @@ method: GET
 queryParams:
   type: school
 auth:
-  type: inherit
+  type: bearer
   credentials:
-    id: folder-Fd8657DF3BDEA71Ca9Bb06F3-bearer
+    token: "{{token}}"
 order: 4501887844876297

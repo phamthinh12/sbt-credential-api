@@ -22,6 +22,6 @@ body:
     }\r\n"
 auth:
   credentials:
-    id: folder-Ca6bccaE042A1Fdf0A247d03-bearer
-  type: inherit
+    token: "{{token}}"
+  type: bearer
 order: 4342279419708961

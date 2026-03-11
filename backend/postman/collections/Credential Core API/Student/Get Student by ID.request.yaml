@@ -5,5 +5,5 @@ method: GET
 auth:
   type: bearer
   credentials:
-    token: "{{accessToken}}"
+    token: "{{token}}"
 order: 4131185965684156

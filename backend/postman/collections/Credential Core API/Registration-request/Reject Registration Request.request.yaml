@@ -3,7 +3,7 @@ name: Reject Registration Request
 url: "{{baseUrl}}/registration-requests/req-001/reject"
 method: PATCH
 auth:
-  type: inherit
+  type: bearer
   credentials:
-    id: folder-Fd8657DF3BDEA71Ca9Bb06F3-bearer
+    token: "{{token}}"
 order: 4478015453400177

@@ -3,7 +3,7 @@ name: auth logout
 url: "{{baseUrl}}\\auth\\logout"
 method: POST
 auth:
-  type: inherit
+  type: bearer
   credentials:
-    id: folder-d7410745aF2C06d42E9d365C-bearer
+    token: "{{token}}"
 order: 4384588726375610

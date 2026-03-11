@@ -3,8 +3,5 @@ name: Credential Core API
 variables:
   baseUrl: https://sbt-credential-api.onrender.com
   local: http://localhost:3000
-  accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoic3VwZXItYWRtaW4tMDAxIiwicm9sZSI6InN1cGVyX2FkbWluIiwiaWF0IjoxNzczMjM2Mjc2LCJleHAiOjE3NzM4NDEwNzZ9.5zRTFaq4KLGXyehBHM8uoexRvV4sINIJSwuw9EOiVEE
-auth:
-  type: bearer
-  credentials:
-    token: "{{token}}"
+  accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoic3VwZXItYWRtaW4tMDAxIiwicm9sZSI6InN1cGVyX2FkbWluIiwiaWF0IjoxNzczMjM2ODgwLCJleHAiOjE3NzM4NDE2ODB9.N6SsYlCl7vgtXbJOlkg5Ii8WOcvN0De0pATqM8me9RQ
+  token: ""
