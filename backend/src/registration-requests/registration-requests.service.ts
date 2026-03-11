@@ -30,11 +30,15 @@ export class RegistrationRequestsService {
     };
   }
 
-  findAll(type?: 'school' | 'student') {
+  findAll(type?: 'school' | 'student', schoolId?: string) {
     let requests = this.mockDb.findAllRegistrationRequests();
     
     if (type) {
       requests = requests.filter(r => r.type === type);
+    }
+    
+    if (schoolId) {
+      requests = requests.filter(r => r.schoolId === schoolId);
     }
     
     return { data: requests };

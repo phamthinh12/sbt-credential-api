@@ -5,5 +5,5 @@ method: POST
 auth:
   type: bearer
   credentials:
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoic3VwZXItYWRtaW4tMDAxIiwicm9sZSI6InN1cGVyX2FkbWluIiwiaWF0IjoxNzczMDU3NTg5LCJleHAiOjE3NzM2NjIzODl9.9kQ_V8Ohhdv5rc-YcE3baWcFn7rHNII_eMhAKdSomgA
+    token: "{{token}}"
 order: 4384588726375610

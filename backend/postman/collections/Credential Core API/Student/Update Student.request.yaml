@@ -1,0 +1,12 @@
+$kind: http-request
+name: Update Student
+url: "{{baseUrl}}/students/student-001"
+method: PUT
+body:
+  type: json
+  content: '{"name": "Nguyễn Văn A Updated", "status": "active"}'
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4181217724427656

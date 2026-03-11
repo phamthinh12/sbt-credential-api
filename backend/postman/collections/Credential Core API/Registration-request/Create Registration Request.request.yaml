@@ -2,6 +2,8 @@ $kind: http-request
 name: Create Registration Request
 url: "{{baseUrl}}/registration-requests"
 method: POST
+headers:
+  Authorization: ""
 body:
   type: json
   content: "{\r
@@ -10,9 +12,11 @@ body:
 
     \  \"type\": \"student\",\r
 
-    \  \"studentCode\": \"SV-TEST-001\",\r
+    \  \"studentCode\": \"SV-TEST-002\",\r
 
     \  \"schoolId\": \"school-001\"\r
 
     }"
+auth:
+  type: noauth
 order: 1773225003961

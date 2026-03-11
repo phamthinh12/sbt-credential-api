@@ -1,0 +1,11 @@
+$kind: http-request
+name: Super Admin Get School Requests
+url: "{{baseUrl}}/registration-requests?type=school"
+method: GET
+queryParams:
+  type: school
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4501887844876297

@@ -1,0 +1,28 @@
+$kind: http-request
+name: Create Student
+url: |
+  {{baseUrl}}/students
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"name\": \"Nguyễn Văn Mới\",\r
+
+    \  \"email\": \"moi.nguyenvan@email.com\",\r
+
+    \  \"walletAddress\": \"0x9999999999999999999999999999999999999999\",\r
+
+    \  \"studentCode\": \"SV999\",\r
+
+    \  \"schoolId\": \"school-001\",\r
+
+    \  \"status\": \"active\"\r
+
+    }\r\n"
+auth:
+  credentials:
+    - key: token
+      value: "{{token}}"
+  type: bearer
+order: 4342279419708961

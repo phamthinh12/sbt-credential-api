@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Patch, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { RegistrationRequestsService } from './registration-requests.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiTags('registration-requests')
 @Controller('registration-requests')
@@ -17,32 +20,46 @@ export class RegistrationRequestsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách yêu cầu đăng ký (API #4, #5, #6)' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'school_admin')
+  @ApiOperation({ summary: 'Lấy danh sách yêu cầu (API #4, #5)' })
   @ApiQuery({ name: 'type', required: false, enum: ['school', 'student'] })
-  findAll(@Query('type') type?: 'school' | 'student') {
-    return this.registrationRequestsService.findAll(type);
+  @ApiQuery({ name: 'schoolId', required: false })
+  findAll(
+    @Query('type') type?: 'school' | 'student',
+    @Query('schoolId') schoolId?: string,
+  ) {
+    return this.registrationRequestsService.findAll(type, schoolId);
   }
 
   @Get('pending')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'school_admin')
   @ApiOperation({ summary: 'Lấy danh sách yêu cầu đang chờ xử lý' })
   findPending() {
     return this.registrationRequestsService.findPending();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Xem chi tiết một yêu cầu đăng ký (API #6)' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'school_admin')
+  @ApiOperation({ summary: 'Xem chi tiết một yêu cầu (API #6)' })
   findOne(@Param('id') id: string) {
     return this.registrationRequestsService.findOne(id);
   }
 
   @Patch(':id/approve')
-  @ApiOperation({ summary: 'Phê duyệt yêu cầu đăng ký (API #7)' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'school_admin')
+  @ApiOperation({ summary: 'Phê duyệt yêu cầu (API #7)' })
   approve(@Param('id') id: string) {
     return this.registrationRequestsService.approve(id);
   }
 
   @Patch(':id/reject')
-  @ApiOperation({ summary: 'Từ chối yêu cầu đăng ký (API #8)' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'school_admin')
+  @ApiOperation({ summary: 'Từ chối yêu cầu (API #8)' })
   reject(@Param('id') id: string) {
     return this.registrationRequestsService.reject(id);
   }

@@ -1,0 +1,9 @@
+$kind: http-request
+name: Reject Registration Request
+url: "{{baseUrl}}/registration-requests/req-001/reject"
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 4478015453400177

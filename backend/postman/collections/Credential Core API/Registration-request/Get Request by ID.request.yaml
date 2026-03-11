@@ -4,4 +4,8 @@ url: "{{baseUrl}}/registration-requests/:id"
 method: GET
 pathVariables:
   id: req-001
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
 order: 4394233522134231
