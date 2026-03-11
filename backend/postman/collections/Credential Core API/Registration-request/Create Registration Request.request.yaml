@@ -1,0 +1,18 @@
+$kind: http-request
+name: Create Registration Request
+url: "{{baseUrl}}/registration-requests"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"walletAddress\": \"0x1234567890abcdef1234567890abcdef12345678\",\r
+
+    \  \"type\": \"student\",\r
+
+    \  \"studentCode\": \"SV-TEST-001\",\r
+
+    \  \"schoolId\": \"school-001\"\r
+
+    }"
+order: 1773225003961

@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get Pending Requests
+url: "\t{{baseUrl}}/registration-requests/pending"
+method: GET
+order: 4299694406717395
