@@ -1,0 +1,7 @@
+$kind: http-request
+name: Approve Registration Request
+url: "{{local}}/registration-requests/:id/approve"
+method: PATCH
+pathVariables:
+  id: req-001
+order: 4395834425696493

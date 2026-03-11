@@ -1,3 +1,5 @@
 $kind: collection
+name: Credential Core API
 variables:
   baseUrl: https://sbt-credential-api.onrender.com
+  local: http://localhost:3000
