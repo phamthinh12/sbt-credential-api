@@ -1,5 +1,11 @@
 $kind: http-request
 name: Approve Registration Request
-url: "{{baseUrl}}/registration-requests/req-001/approve"
+url: "{{baseUrl}}/registration-requests/:id/approve"
 method: PATCH
+pathVariables:
+  id: req-001
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
 order: 4395834425696493

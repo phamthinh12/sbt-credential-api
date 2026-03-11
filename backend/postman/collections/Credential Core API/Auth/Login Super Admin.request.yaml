@@ -11,4 +11,16 @@ body:
     \  \"password\": \"password123\"\r
 
     }"
+scripts:
+  - type: afterResponse
+    code: "if (response.status === 200) {\r
+
+      \    var jsonData = JSON.parse(responseBody);\r
+
+      \    pm.environment.set(\"token\", jsonData.access_token);\r
+
+      \    pm.environment.set(\"user_role\", jsonData.user.role);\r
+
+      }\r\n"
+    language: text/javascript
 order: 1773056430532
