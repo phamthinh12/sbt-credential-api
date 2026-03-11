@@ -4,3 +4,7 @@ variables:
   baseUrl: https://sbt-credential-api.onrender.com
   local: http://localhost:3000
   token: "placeholder_token\t"
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"

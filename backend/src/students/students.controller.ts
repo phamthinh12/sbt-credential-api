@@ -13,7 +13,7 @@ export class StudentsController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('admin', 'super_admin', 'school_admin')
   @ApiOperation({ summary: 'Lấy danh sách sinh viên (API #9) - Admin: xem tất cả, School: xem của trường' })
   @ApiQuery({ name: 'schoolId', required: false })
   findAll(@Request() req: any, @Query('schoolId') schoolId?: string) {
@@ -30,7 +30,7 @@ export class StudentsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('admin', 'super_admin', 'school_admin')
   @ApiOperation({ summary: 'Tạo sinh viên mới - School/Admin' })
   create(@Request() req: any, @Body() createStudentDto: CreateStudentDto) {
     const user = req.user;
@@ -39,7 +39,7 @@ export class StudentsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('admin', 'super_admin', 'school_admin')
   @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #11) - School/Admin' })
   update(@Param('id') id: string, @Body() data: any) {
     return this.studentsService.update(id, data);
@@ -47,7 +47,7 @@ export class StudentsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles('admin', 'super_admin')
   @ApiOperation({ summary: 'Xóa sinh viên (API #12) - Admin only' })
   delete(@Param('id') id: string) {
     return this.studentsService.delete(id);

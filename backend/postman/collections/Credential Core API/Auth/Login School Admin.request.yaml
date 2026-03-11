@@ -1,0 +1,8 @@
+$kind: http-request
+name: Login School Admin
+url: "{{baseUrl}}/auth/login"
+method: POST
+body:
+  type: json
+  content: '{"username":"school_admin","password":"password123"}'
+order: 4452741890228028
