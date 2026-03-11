@@ -8,5 +8,5 @@ body:
 auth:
   type: bearer
   credentials:
-    token: "{{token}}"
+    token: "{{accessToken}}"
 order: 4181217724427656

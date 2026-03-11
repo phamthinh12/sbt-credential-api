@@ -5,4 +5,10 @@ method: POST
 body:
   type: json
   content: '{"username":"school_admin","password":"password123"}'
+scripts:
+  - type: afterResponse
+    code: "var jsonData = JSON.parse(responseBody);\r
+
+      pm.collectionVariables.set(\"accessToken\", jsonData.access_token);\r\n"
+    language: text/javascript
 order: 4452741890228028

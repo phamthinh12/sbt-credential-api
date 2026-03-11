@@ -3,7 +3,7 @@ name: Delete Student
 url: "{{baseUrl}}/students/student-002"
 method: DELETE
 auth:
-  type: bearer
+  type: inherit
   credentials:
-    token: "{{token}}"
+    id: folder-Ca6bccaE042A1Fdf0A247d03-bearer
 order: 4294779919388048

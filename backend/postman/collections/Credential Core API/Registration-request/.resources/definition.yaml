@@ -1,3 +1,7 @@
 $kind: collection
 name: Registration-request
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
 order: 1947879792967679

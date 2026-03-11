@@ -13,14 +13,8 @@ body:
     }"
 scripts:
   - type: afterResponse
-    code: "if (response.status === 200) {\r
+    code: "var jsonData = JSON.parse(responseBody);\r
 
-      \    var jsonData = JSON.parse(responseBody);\r
-
-      \    pm.environment.set(\"token\", jsonData.access_token);\r
-
-      \    pm.environment.set(\"user_role\", jsonData.user.role);\r
-
-      }\r\n"
+      pm.collectionVariables.set(\"accessToken\", jsonData.access_token);\r\n"
     language: text/javascript
 order: 1773056430532

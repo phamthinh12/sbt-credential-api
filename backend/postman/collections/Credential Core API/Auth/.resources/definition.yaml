@@ -1,3 +1,7 @@
 $kind: collection
 name: Auth
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
 order: 1147877129715711

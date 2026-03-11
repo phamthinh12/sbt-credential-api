@@ -5,7 +5,7 @@ method: PATCH
 pathVariables:
   id: req-001
 auth:
-  type: bearer
+  type: inherit
   credentials:
-    token: "{{token}}"
+    id: folder-Fd8657DF3BDEA71Ca9Bb06F3-bearer
 order: 4395834425696493

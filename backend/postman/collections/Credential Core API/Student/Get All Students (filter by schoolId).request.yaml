@@ -7,5 +7,5 @@ queryParams:
 auth:
   type: bearer
   credentials:
-    token: "{{token}}"
+    token: "{{accessToken}}"
 order: 1773227810904

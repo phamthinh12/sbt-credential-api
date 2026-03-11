@@ -1,3 +1,7 @@
 $kind: collection
 name: Student
+auth:
+  type: bearer
+  credentials:
+    token: "{{accessToken}}"
 order: 243457861877759

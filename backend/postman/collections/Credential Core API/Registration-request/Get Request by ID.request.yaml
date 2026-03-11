@@ -7,5 +7,5 @@ pathVariables:
 auth:
   type: bearer
   credentials:
-    token: "{{token}}"
+    token: "{{accessToken}}"
 order: 4394233522134231
