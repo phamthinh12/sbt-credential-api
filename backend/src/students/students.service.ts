@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Student } from './entities/student.entity';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 
@@ -6,23 +6,42 @@ import { MockDatabaseService } from '../common/services/mock-database.service';
 export class StudentsService {
   constructor(private mockDb: MockDatabaseService) {}
 
-  async findAll(): Promise<Student[]> {
-    return this.mockDb.findAllStudents();
+  async findAll(schoolId?: string): Promise<{ data: Student[] }> {
+    let students = this.mockDb.findAllStudents();
+    
+    if (schoolId) {
+      students = students.filter(s => s.schoolId === schoolId);
+    }
+    
+    return { data: students };
   }
 
-  async findOne(id: string): Promise<Student | undefined> {
-    return this.mockDb.findStudentById(id);
+  async findOne(id: string): Promise<{ data: Student }> {
+    const student = this.mockDb.findStudentById(id);
+    if (!student) {
+      throw new NotFoundException('Không tìm thấy sinh viên');
+    }
+    return { data: student };
   }
 
-  async create(data: Partial<Student>): Promise<Student> {
-    return this.mockDb.createStudent(data);
+  async create(data: Partial<Student>): Promise<{ data: Student }> {
+    const student = this.mockDb.createStudent(data);
+    return { data: student };
   }
 
-  async update(id: string, data: Partial<Student>): Promise<Student | undefined> {
-    return this.mockDb.updateStudent(id, data);
+  async update(id: string, data: Partial<Student>): Promise<{ data: Student }> {
+    const student = this.mockDb.updateStudent(id, data);
+    if (!student) {
+      throw new NotFoundException('Không tìm thấy sinh viên');
+    }
+    return { data: student };
   }
 
-  async delete(id: string): Promise<boolean> {
-    return this.mockDb.deleteStudent(id);
+  async delete(id: string): Promise<{ message: string }> {
+    const deleted = this.mockDb.deleteStudent(id);
+    if (!deleted) {
+      throw new NotFoundException('Không tìm thấy sinh viên');
+    }
+    return { message: 'Xóa sinh viên thành công' };
   }
 }
