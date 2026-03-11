@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Student } from '../../students/entities/student.entity';
 import { Credential } from '../../credentials/entities/credential.entity';
 import { User } from '../../auth/entities/user.entity';
+import { RegistrationRequest } from '../../registration-requests/entities/registration-request.entity';
 
 @Injectable()
 export class MockDatabaseService {
@@ -247,6 +248,64 @@ export class MockDatabaseService {
 
   findSchoolById(id: string) {
     return this.schools.find(s => s.id === id);
+  }
+
+  // ============ Registration Requests ============
+  findAllRegistrationRequests() {
+    return this.registrationRequests;
+  }
+
+  findRegistrationRequestById(id: string) {
+    return this.registrationRequests.find(r => r.id === id);
+  }
+
+  findRegistrationRequestsByStatus(status: 'pending' | 'approved' | 'rejected') {
+    return this.registrationRequests.filter(r => r.status === status);
+  }
+
+  findRegistrationRequestByWalletAddress(walletAddress: string) {
+    return this.registrationRequests.find(r => r.walletAddress.toLowerCase() === walletAddress.toLowerCase());
+  }
+
+  createRegistrationRequest(data: {
+    walletAddress: string;
+    type: 'school' | 'student';
+    schoolName?: string;
+    schoolDocument?: string;
+    studentCode?: string;
+    schoolId?: string;
+  }) {
+    const request = {
+      id: `req-${String(this.idCounter++).padStart(3, '0')}`,
+      walletAddress: data.walletAddress,
+      type: data.type,
+      status: 'pending' as const,
+      schoolName: data.schoolName,
+      schoolDocument: data.schoolDocument,
+      studentCode: data.studentCode,
+      schoolId: data.schoolId,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.registrationRequests.push(request);
+    return request;
+  }
+
+  updateRegistrationRequest(id: string, data: Partial<{
+    status: 'pending' | 'approved' | 'rejected';
+    schoolName?: string;
+    schoolDocument?: string;
+    studentCode?: string;
+    schoolId?: string;
+  }>) {
+    const index = this.registrationRequests.findIndex(r => r.id === id);
+    if (index === -1) return undefined;
+    this.registrationRequests[index] = {
+      ...this.registrationRequests[index],
+      ...data,
+      updatedAt: new Date(),
+    };
+    return this.registrationRequests[index];
   }
 }
 

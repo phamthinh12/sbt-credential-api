@@ -7,6 +7,7 @@ import { EventsModule } from './events/events.module';
 import { AppController } from './app.controller';
 import { MockDatabaseService } from './common/services/mock-database.service';
 import { SchoolsModule } from './schools/schools.module';
+import { RegistrationRequestsModule } from './registration-requests/registration-requests.module';
 
 @Global()
 @Module({
@@ -19,7 +20,8 @@ import { SchoolsModule } from './schools/schools.module';
     StudentsModule,
     CredentialsModule,
     EventsModule,
-    SchoolsModule,],
+    SchoolsModule,
+    RegistrationRequestsModule,],
   controllers: [AppController],
   providers: [MockDatabaseService],
 })

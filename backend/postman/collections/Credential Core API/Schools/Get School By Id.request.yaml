@@ -1,5 +1,7 @@
 $kind: http-request
 name: Get School By Id
-url: "{{baseUrl}}/schools/school-001"
+url: "{{baseUrl}}/schools/:id"
 method: GET
+pathVariables:
+  id: school-001
 order: 2604747214141016
