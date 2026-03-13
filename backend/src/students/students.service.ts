@@ -36,7 +36,12 @@ export class StudentsService {
       if (!user.schoolId) {
         throw new ForbiddenException('School Admin cần có schoolId');
       }
-      students = students.filter(s => s.schoolId === user.schoolId);
+      // School Admin chỉ xem được học sinh của trường mình
+      const targetSchoolId = schoolId || user.schoolId;
+      if (schoolId && schoolId !== user.schoolId) {
+        throw new ForbiddenException('Bạn chỉ có thể xem học sinh của trường mình');
+      }
+      students = students.filter(s => s.schoolId === targetSchoolId);
     }
     
     return { data: students };
