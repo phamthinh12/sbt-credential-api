@@ -1,10 +1,17 @@
 # SBT Credential API - Specification
 
-Base URL: `https://sbt-credential-api.onrender.com`
+## URLs
+
+- **Local:** `http://localhost:3000`
+- **Deploy:** `https://sbt-credential-api.onrender.com`
 
 ---
 
 ## Authentication
+
+> **Lưu ý:** Thay `<BASE_URL>` bằng URL tương ứng:
+> - Local: `http://localhost:3000`
+> - Deploy: `https://sbt-credential-api.onrender.com`
 
 Tất cả các API (trừ API public) cần gửi JWT token trong header:
 
@@ -22,7 +29,7 @@ Authorization: Bearer <access_token>
 - **Headers:** Không cần auth
 - **Request Body:**
 ```json
-{ "username": "admin", "password": "password123" }
+{ "username": "admin", "password": "admin123" }
 ```
 - **Response:**
 ```json
@@ -35,6 +42,12 @@ Authorization: Bearer <access_token>
     "schoolId": null
   }
 }
+```
+- **Example:**
+```bash
+curl -X POST https://sbt-credential-api.onrender.com/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}'
 ```
 
 ---
@@ -374,9 +387,13 @@ Authorization: Bearer <access_token>
 ```json
 {
   "data": [
-    { "id": "school-001", "name": "Đại học Bách Khoa", "walletAddress": "0x742d...", "isActive": true }
+    { "id": "school-001", "name": "Đại học Bách Khoa", "isActive": true }
   ]
 }
+```
+- **Example:**
+```bash
+curl https://sbt-credential-api.onrender.com/schools
 ```
 
 ---
@@ -504,6 +521,11 @@ Authorization: Bearer <access_token>
   "issuedAt": "2024-01-15",
   "expiryDate": "2027-01-15"
 }
+```
+
+- **Example:**
+```bash
+curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-ABC123
 ```
 
 ---
