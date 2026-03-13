@@ -13,8 +13,8 @@ export class StudentsController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách sinh viên (API #9) - Admin: xem tất cả, School: xem của trường' })
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Lấy danh sách sinh viên (API #9) - School Admin xem của trường mình' })
   @ApiQuery({ name: 'schoolId', required: false })
   findAll(@Request() req: any, @Query('schoolId') schoolId?: string) {
     const user = req.user;
