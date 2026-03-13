@@ -149,6 +149,8 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 ### #5 - GET /registration-requests?type=school - Get School Requests
 - **URL:** `{{baseUrl}}/registration-requests?type=school`
 - **Ai gọi:** Super Admin
+- **Mô tả:** Super Admin xem danh sách yêu cầu đăng ký School đang chờ duyệt
+- **Headers:** `Authorization: Bearer <token>` (Super Admin)
 - **Mô tả:** Xem danh sách yêu cầu đăng ký School đang chờ duyệt
 - **Headers:** `Authorization: Bearer <token>`
 - **Query Parameters:** `type=school` (bắt buộc)
@@ -174,9 +176,9 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ### #6 - GET /registration-requests?type=student - Get Student Requests
 - **URL:** `{{baseUrl}}/registration-requests?type=student`
-- **Ai gọi:** School
-- **Mô tả:** Xem danh sách yêu cầu đăng ký Student của trường mình đang chờ duyệt
-- **Headers:** `Authorization: Bearer <token>`
+- **Ai gọi:** School Admin
+- **Mô tả:** School Admin xem danh sách yêu cầu đăng ký Student của trường mình đang chờ duyệt
+- **Headers:** `Authorization: Bearer <token>` (School Admin)
 - **Query Parameters:** 
   - `type=student` (bắt buộc)
   - `schoolId` (optional - để lọc theo trường)
@@ -191,7 +193,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
       "email": "a@email.com",
       "walletAddress": "0x111...",
       "studentCode": "SV001",
-      "schoolId": "school-001",
+      "schoolId": "001",
       "status": "pending",
       "createdAt": "2024-03-02T10:00:00Z"
     }
