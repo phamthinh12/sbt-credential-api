@@ -33,14 +33,6 @@ export class RegistrationRequestsController {
     return this.registrationRequestsService.findAll(type, schoolId, req.user);
   }
 
-  @Get('pending')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách yêu cầu đang chờ xử lý' })
-  findPending(@Request() req: any) {
-    return this.registrationRequestsService.findPending(req.user);
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Xem chi tiết một yêu cầu (API #6) - Public' })
   findOne(@Param('id') id: string) {

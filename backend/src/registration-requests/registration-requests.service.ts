@@ -66,16 +66,6 @@ export class RegistrationRequestsService {
     return { data: requests };
   }
 
-  findPending(user?: User) {
-    const requests = this.mockDb.findRegistrationRequestsByStatus('pending');
-    
-    if (user?.role === 'school_admin' && user.schoolId) {
-      return { data: requests.filter(r => r.schoolId === user.schoolId) };
-    }
-    
-    return { data: requests };
-  }
-
   findOne(id: string) {
     const request = this.mockDb.findRegistrationRequestById(id);
     if (!request) {
