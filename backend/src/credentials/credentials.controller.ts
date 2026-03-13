@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CredentialsService } from './credentials.service';
@@ -69,16 +69,16 @@ export class CredentialsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Cấp văn bằng (API #16)' })
-  create(@Body() createCredentialDto: CreateCredentialDto) {
-    return this.credentialsService.create(createCredentialDto);
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Cấp văn bằng (API #16) - School Admin tạo văn bằng cho sinh viên' })
+  create(@Body() createCredentialDto: CreateCredentialDto, @Request() req: any) {
+    return this.credentialsService.create(createCredentialDto, req.user);
   }
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Update credential status' })
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Update credential - Immutable (không thể sửa sau khi tạo)' })
   update(@Param('id') id: string, @Body() data: any) {
     return this.credentialsService.update(id, data);
   }

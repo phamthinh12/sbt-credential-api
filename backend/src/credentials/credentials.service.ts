@@ -1,6 +1,13 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 import * as crypto from 'crypto';
+
+interface User {
+  userId: string;
+  username: string;
+  role: string;
+  schoolId?: string;
+}
 
 @Injectable()
 export class CredentialsService {
@@ -23,12 +30,20 @@ export class CredentialsService {
     return { data: all.filter(c => c.schoolId === schoolId) };
   }
 
-  async create(data: any): Promise<any> {
+  async create(data: any, user: User): Promise<any> {
+    // School Admin can only create credential for their school
+    if (user.role === 'school_admin') {
+      if (!user.schoolId) {
+        throw new ForbiddenException('School Admin cần có schoolId');
+      }
+      data.schoolId = user.schoolId;
+    }
     return this.mockDb.createCredential(data);
   }
 
   async update(id: string, data: any): Promise<any> {
-    return this.mockDb.updateCredential(id, data);
+    // Credentials are immutable - cannot be updated after creation
+    throw new BadRequestException('Văn bằng không thể sửa sau khi tạo');
   }
 
   async revoke(id: string): Promise<any> {
