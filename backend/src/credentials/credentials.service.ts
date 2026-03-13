@@ -68,12 +68,17 @@ export class CredentialsService {
       throw new ForbiddenException('Bạn chỉ có thể thu hồi văn bằng của trường mình');
     }
 
-    this.mockDb.updateCredential(id, { status: 'revoked' as any });
+    const now = new Date();
+    this.mockDb.updateCredential(id, { 
+      status: 'revoked' as any,
+      updatedAt: now 
+    });
 
     return { 
       success: true, 
       message: 'Đã thu hồi văn bằng', 
-      status: 'revoked' 
+      status: 'revoked',
+      updatedAt: now
     };
   }
 

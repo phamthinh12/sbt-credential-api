@@ -86,8 +86,8 @@ export class CredentialsController {
 
   @Patch(':id/revoke')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Thu hồi văn bằng (API #19)' })
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Thu hồi văn bằng (API #19) - School Admin thu hồi văn bằng của trường mình' })
   revoke(@Param('id') id: string, @Request() req: any) {
     return this.credentialsService.revoke(id, req.user);
   }
