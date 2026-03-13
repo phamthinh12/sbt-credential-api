@@ -23,7 +23,7 @@ Authorization: Bearer <access_token>
 
 ## 1. AUTH (3 APIs)
 
-### #1 - POST /auth/login
+### #1 - POST /auth/login - Login Super Admin
 - **Ai gọi:** Super Admin
 - **Mô tả:** Super Admin đăng nhập bằng username và password
 - **Headers:** Không cần auth
@@ -52,7 +52,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #2 - POST /auth/login/wallet
+### #2 - POST /auth/login/wallet - Login with Wallet
 - **Ai gọi:** Student hoặc School (sau khi đã được duyệt)
 - **Mô tả:** Đăng nhập bằng wallet address (MetaMask)
 - **Headers:** Không cần auth
@@ -87,7 +87,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #3 - GET /auth/wallet/:address
+### #3 - GET /auth/wallet/:address - Check Wallet
 - **Ai gọi:** Frontend (khi user click "Kết nối MetaMask")
 - **Mô tả:** Kiểm tra xem địa chỉ ví đã đăng ký chưa
 - **Headers:** Không cần auth
@@ -109,7 +109,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ## 2. REGISTRATION REQUESTS (6 APIs)
 
-### #4 - POST /registration-requests
+### #4 - POST /registration-requests - Create Registration Request
 - **Ai gọi:** Student hoặc School khi đăng ký lần đầu
 - **Mô tả:** Tạo yêu cầu đăng ký mới
 - **Headers:** Không cần auth
@@ -142,7 +142,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #5 - GET /registration-requests?type=school
+### #5 - GET /registration-requests?type=school - Get School Requests
 - **Ai gọi:** Super Admin
 - **Mô tả:** Xem danh sách yêu cầu đăng ký School đang chờ duyệt
 - **Headers:** `Authorization: Bearer <token>`
@@ -167,7 +167,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #6 - GET /registration-requests?type=student
+### #6 - GET /registration-requests?type=student - Get Student Requests
 - **Ai gọi:** School
 - **Mô tả:** Xem danh sách yêu cầu đăng ký Student của trường mình đang chờ duyệt
 - **Headers:** `Authorization: Bearer <token>`
@@ -195,7 +195,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #7 - GET /registration-requests/:id
+### #7 - GET /registration-requests/:id - Get Request by ID
 - **Ai gọi:** Super Admin / School Admin
 - **Mô tả:** Xem chi tiết một yêu cầu đăng ký
 - **Headers:** `Authorization: Bearer <token>`
@@ -217,7 +217,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #8 - PATCH /registration-requests/:id/approve
+### #8 - PATCH /registration-requests/:id/approve - Approve Registration Request
 - **Ai gọi:** School hoặc Super Admin
 - **Mô tả:** Duyệt yêu cầu đăng ký
 - **Headers:** `Authorization: Bearer <token>`
@@ -258,7 +258,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #9 - PATCH /registration-requests/:id/reject
+### #9 - PATCH /registration-requests/:id/reject - Reject Registration Request
 - **Ai gọi:** School hoặc Super Admin
 - **Mô tả:** Từ chối yêu cầu đăng ký
 - **Headers:** `Authorization: Bearer <token>`
@@ -273,7 +273,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ## 3. STUDENTS (5 APIs)
 
-### #10 - GET /students
+### #10 - GET /students - Get All Students
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Lấy danh sách sinh viên của trường mình (lọc theo schoolId)
 - **Headers:** `Authorization: Bearer <token>`
@@ -290,7 +290,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #11 - GET /students/:id
+### #11 - GET /students/:id - Get Student by ID
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Xem chi tiết một sinh viên
 - **Headers:** `Authorization: Bearer <token>`
@@ -312,7 +312,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #12 - POST /students
+### #12 - POST /students - Create Student
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Tạo sinh viên mới trực tiếp (không qua đăng ký)
 - **Headers:** `Authorization: Bearer <token>`
@@ -341,7 +341,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #13 - PUT /students/:id
+### #13 - PUT /students/:id - Update Student
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Cập nhật thông tin sinh viên
 - **Headers:** `Authorization: Bearer <token>`
@@ -365,7 +365,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #14 - DELETE /students/:id
+### #14 - DELETE /students/:id - Delete Student
 - **Ai gọi:** Super Admin only
 - **Mô tả:** Xóa sinh viên
 - **Headers:** `Authorization: Bearer <token>`
@@ -379,7 +379,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ## 4. SCHOOLS (2 APIs)
 
-### #15 - GET /schools
+### #15 - GET /schools - Get All Schools
 - **Ai gọi:** Tất cả (để Student chọn trường khi đăng ký)
 - **Mô tả:** Lấy danh sách tất cả trường
 - **Headers:** Không cần auth
@@ -398,7 +398,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #16 - GET /schools/:id
+### #16 - GET /schools/:id - Get School by ID
 - **Ai gọi:** Ai cũng được
 - **Mô tả:** Xem chi tiết một trường
 - **Headers:** Không cần auth
@@ -419,7 +419,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ## 5. CREDENTIALS (8 APIs)
 
-### #17 - GET /credentials
+### #17 - GET /credentials - Get All Credentials
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Lấy danh sách văn bằng
 - **Headers:** `Authorization: Bearer <token>`
@@ -442,7 +442,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #18 - POST /credentials
+### #18 - POST /credentials - Issue Credential
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** TẠO văn bằng mới (immutable - không sửa được sau khi tạo)
 - **Headers:** `Authorization: Bearer <token>`
@@ -473,7 +473,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #19 - GET /credentials/:id
+### #19 - GET /credentials/:id - Get Credential by ID
 - **Ai gọi:** Ai cũng được
 - **Mô tả:** Xem chi tiết một văn bằng
 - **Headers:** Không cần auth
@@ -496,7 +496,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #20 - GET /credentials/verify/:code
+### #20 - GET /credentials/verify/:code - Verify by Code (Public)
 - **Ai gọi:** Tất cả (Public)
 - **Mô tả:** Verify văn bằng công khai bằng mã code
 - **Headers:** Không cần auth
@@ -530,7 +530,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #21 - PATCH /credentials/:id/revoke
+### #21 - PATCH /credentials/:id/revoke - Revoke Credential
 - **Ai gọi:** School (trường đã cấp văn bằng đó)
 - **Mô tả:** THU HỒI văn bằng (đổi status = 'revoked')
 - **Headers:** `Authorization: Bearer <token>`
@@ -547,7 +547,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #22 - PATCH /credentials/:id/confirm
+### #22 - PATCH /credentials/:id/confirm - Confirm Credential
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Xác nhận văn bằng (chuyển từ issued → confirmed)
 - **Headers:** `Authorization: Bearer <token>`
@@ -563,7 +563,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #23 - GET /credentials/student/:studentId
+### #23 - GET /credentials/student/:studentId - Get Credentials by Student
 - **Ai gọi:** School (xem sinh viên của trường mình)
 - **Mô tả:** Lấy danh sách văn bằng của một sinh viên
 - **Headers:** `Authorization: Bearer <token>`
@@ -583,7 +583,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #24 - GET /credentials/school/:schoolId
+### #24 - GET /credentials/school/:schoolId - Get Credentials by School
 - **Ai gọi:** School / Super Admin
 - **Mô tả:** Lấy danh sách văn bằng của một trường
 - **Headers:** `Authorization: Bearer <token>`
