@@ -22,7 +22,7 @@ export class RegistrationRequestsController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách yêu cầu (API #4, #5)' })
+  @ApiOperation({ summary: 'Lấy danh sách yêu cầu (API #4: super_admin xem school, API #5: school_admin xem student)' })
   @ApiQuery({ name: 'type', required: false, enum: ['school', 'student'] })
   @ApiQuery({ name: 'schoolId', required: false })
   findAll(
@@ -42,9 +42,7 @@ export class RegistrationRequestsController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Xem chi tiết một yêu cầu (API #6)' })
+  @ApiOperation({ summary: 'Xem chi tiết một yêu cầu (API #6) - Public' })
   findOne(@Param('id') id: string) {
     return this.registrationRequestsService.findOne(id);
   }
