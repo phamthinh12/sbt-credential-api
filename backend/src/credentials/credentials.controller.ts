@@ -87,15 +87,15 @@ export class CredentialsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Thu hồi văn bằng (API #19)' })
-  revoke(@Param('id') id: string) {
-    return this.credentialsService.revoke(id);
+  revoke(@Param('id') id: string, @Request() req: any) {
+    return this.credentialsService.revoke(id, req.user);
   }
 
   @Patch(':id/confirm')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Xác nhận văn bằng (API #20)' })
-  confirm(@Param('id') id: string, @Body() data: { txHash?: string; tokenId?: string }) {
-    return this.credentialsService.confirm(id, data);
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Xác nhận văn bằng (API #20) - School Admin xác nhận văn bằng' })
+  confirm(@Param('id') id: string, @Body() data: { txHash?: string; tokenId?: string }, @Request() req: any) {
+    return this.credentialsService.confirm(id, data, req.user);
   }
 }

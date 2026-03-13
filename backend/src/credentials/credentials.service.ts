@@ -46,7 +46,7 @@ export class CredentialsService {
     throw new BadRequestException('Văn bằng không thể sửa sau khi tạo');
   }
 
-  async revoke(id: string): Promise<any> {
+  async revoke(id: string, user?: User): Promise<any> {
     const credential = this.mockDb.findCredentialById(id);
     if (!credential) {
       throw new NotFoundException('Không tìm thấy văn bằng');
@@ -54,6 +54,10 @@ export class CredentialsService {
 
     if (credential.status === 'revoked') {
       throw new BadRequestException('Văn bằng đã bị thu hồi trước đó');
+    }
+
+    if (user?.role === 'school_admin' && user.schoolId !== credential.schoolId) {
+      throw new ForbiddenException('Bạn chỉ có thể thu hồi văn bằng của trường mình');
     }
 
     this.mockDb.updateCredential(id, { status: 'revoked' as any });
@@ -65,7 +69,7 @@ export class CredentialsService {
     };
   }
 
-  async confirm(id: string, data: { txHash?: string; tokenId?: string }): Promise<any> {
+  async confirm(id: string, data: { txHash?: string; tokenId?: string }, user?: User): Promise<any> {
     const credential = this.mockDb.findCredentialById(id);
     if (!credential) {
       throw new NotFoundException('Không tìm thấy văn bằng');
@@ -73,6 +77,10 @@ export class CredentialsService {
 
     if (credential.status !== 'issued') {
       throw new BadRequestException('Văn bằng phải ở trạng thái issued mới có thể xác nhận');
+    }
+
+    if (user?.role === 'school_admin' && user.schoolId !== credential.schoolId) {
+      throw new ForbiddenException('Bạn chỉ có thể xác nhận văn bằng của trường mình');
     }
 
     this.mockDb.updateCredential(id, { 
