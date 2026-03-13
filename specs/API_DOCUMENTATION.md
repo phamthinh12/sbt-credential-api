@@ -325,33 +325,7 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-### #12 - POST /students - Create Student
-- **URL:** `{{baseUrl}}/students`
-- **Ai gọi:** School / Super Admin
-- **Mô tả:** Tạo sinh viên mới trực tiếp (không qua đăng ký)
-- **Headers:** `Authorization: Bearer <token>`
-- **Request Body:**
-```json
-{
-  "name": "Nguyễn Văn A",
-  "email": "a@email.com",
-  "studentCode": "SV001",
-  "walletAddress": "0x1111111111111111111111111111111111111111"
-}
-```
-- **Response:**
-```json
-{
-  "data": {
-    "id": "student-001",
-    "name": "Nguyễn Văn A",
-    "email": "a@email.com",
-    "studentCode": "SV001",
-    "status": "active",
-    "schoolId": "school-001"
-  }
-}
-```
+
 
 ---
 
