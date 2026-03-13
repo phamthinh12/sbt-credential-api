@@ -11,6 +11,16 @@ export class CreateRegistrationDto {
     @IsEnum(['school', 'student'])
     type: 'school' | 'student';
 
+    @ApiProperty({ example: 'Nguyễn Văn A', required: false })
+    @IsOptional()
+    @IsString()
+    name?: string;
+
+    @ApiProperty({ example: 'a@email.com', required: false })
+    @IsOptional()
+    @IsString()
+    email?: string;
+
     @ApiProperty({ example: 'Đại học Bách Khoa', required: false })
     @IsOptional()
     @IsString()

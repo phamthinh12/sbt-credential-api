@@ -1,6 +1,13 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
+
+interface User {
+  userId: string;
+  username: string;
+  role: string;
+  schoolId?: string;
+}
 
 @Injectable()
 export class RegistrationRequestsService {
@@ -18,6 +25,8 @@ export class RegistrationRequestsService {
     const request = this.mockDb.createRegistrationRequest({
       walletAddress: createDto.walletAddress,
       type: createDto.type,
+      name: createDto.name,
+      email: createDto.email,
       schoolName: createDto.schoolName,
       schoolDocument: createDto.schoolDocument,
       studentCode: createDto.studentCode,
@@ -26,26 +35,33 @@ export class RegistrationRequestsService {
 
     return {
       data: request,
-      message: 'Yêu cầu đăng ký đã được gửi thành công',
+      message: 'Yêu cầu đăng ký đã được gửi. Vui lòng chờ duyệt.',
     };
   }
 
-  findAll(type?: 'school' | 'student', schoolId?: string) {
+  findAll(type?: 'school' | 'student', schoolId?: string, user?: User) {
     let requests = this.mockDb.findAllRegistrationRequests();
     
     if (type) {
       requests = requests.filter(r => r.type === type);
     }
     
-    if (schoolId) {
+    if (user?.role === 'school_admin' && user.schoolId) {
+      requests = requests.filter(r => r.schoolId === user.schoolId);
+    } else if (schoolId) {
       requests = requests.filter(r => r.schoolId === schoolId);
     }
     
     return { data: requests };
   }
 
-  findPending() {
+  findPending(user?: User) {
     const requests = this.mockDb.findRegistrationRequestsByStatus('pending');
+    
+    if (user?.role === 'school_admin' && user.schoolId) {
+      return { data: requests.filter(r => r.schoolId === user.schoolId) };
+    }
+    
     return { data: requests };
   }
 
@@ -57,7 +73,7 @@ export class RegistrationRequestsService {
     return { data: request };
   }
 
-  approve(id: string) {
+  approve(id: string, user?: User) {
     const request = this.mockDb.findRegistrationRequestById(id);
     if (!request) {
       throw new NotFoundException('Không tìm thấy yêu cầu đăng ký');
@@ -69,20 +85,30 @@ export class RegistrationRequestsService {
 
     this.mockDb.updateRegistrationRequest(id, { status: 'approved' });
 
+    let result: any = { success: true, message: 'Đã duyệt yêu cầu' };
+
     if (request.type === 'student' && request.studentCode) {
-      this.mockDb.createStudent({
-        name: request.schoolName || 'Sinh viên mới',
-        email: `${request.studentCode.toLowerCase()}@student.edu`,
+      const student = this.mockDb.createStudent({
+        name: request.name || request.schoolName || 'Sinh viên mới',
+        email: request.email || `${request.studentCode.toLowerCase()}@student.edu`,
         walletAddress: request.walletAddress,
         studentCode: request.studentCode,
         schoolId: request.schoolId || 'school-001',
         status: 'active',
       });
+      result.student = student;
+    } else if (request.type === 'school') {
+      const school = this.mockDb.createSchool({
+        name: request.schoolName || request.name || 'Trường mới',
+        walletAddress: request.walletAddress,
+        isActive: true,
+      });
+      result.school = school;
     }
 
     return {
+      ...result,
       data: this.mockDb.findRegistrationRequestById(id),
-      message: 'Yêu cầu đã được phê duyệt',
     };
   }
 
@@ -99,8 +125,9 @@ export class RegistrationRequestsService {
     this.mockDb.updateRegistrationRequest(id, { status: 'rejected' });
 
     return {
+      success: true,
+      message: 'Đã từ chối yêu cầu',
       data: this.mockDb.findRegistrationRequestById(id),
-      message: 'Yêu cầu đã bị từ chối',
     };
   }
 }

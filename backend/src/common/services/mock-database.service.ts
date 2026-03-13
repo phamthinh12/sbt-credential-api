@@ -279,6 +279,8 @@ export class MockDatabaseService {
   createRegistrationRequest(data: {
     walletAddress: string;
     type: 'school' | 'student';
+    name?: string;
+    email?: string;
     schoolName?: string;
     schoolDocument?: string;
     studentCode?: string;
@@ -289,6 +291,8 @@ export class MockDatabaseService {
       walletAddress: data.walletAddress,
       type: data.type,
       status: 'pending' as const,
+      name: data.name,
+      email: data.email,
       schoolName: data.schoolName,
       schoolDocument: data.schoolDocument,
       studentCode: data.studentCode,
@@ -315,6 +319,19 @@ export class MockDatabaseService {
       updatedAt: new Date(),
     };
     return this.registrationRequests[index];
+  }
+
+  createSchool(data: { name: string; walletAddress: string; isActive: boolean }) {
+    const school = {
+      id: `school-${String(this.idCounter++).padStart(3, '0')}`,
+      name: data.name,
+      walletAddress: data.walletAddress,
+      isActive: data.isActive,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.schools.push(school);
+    return school;
   }
 }
 

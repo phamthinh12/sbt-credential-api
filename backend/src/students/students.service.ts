@@ -16,7 +16,7 @@ export class StudentsService {
   async findAll(user: User, schoolId?: string): Promise<{ data: Student[] }> {
     let students = this.mockDb.findAllStudents();
     
-    if (user.role === 'admin' || user.role === 'super_admin') {
+    if (user.role === 'super_admin') {
       if (schoolId) {
         students = students.filter(s => s.schoolId === schoolId);
       }

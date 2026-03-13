@@ -14,7 +14,7 @@ export class CredentialsController {
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Get all credentials' })
   findAll() {
     return this.credentialsService.findAll();
@@ -55,7 +55,7 @@ export class CredentialsController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Issue new credential' })
   create(@Body() createCredentialDto: CreateCredentialDto) {
     return this.credentialsService.create(createCredentialDto);
@@ -63,7 +63,7 @@ export class CredentialsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'school_admin')
+  @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Update credential status' })
   update(@Param('id') id: string, @Body() data: any) {
     return this.credentialsService.update(id, data);

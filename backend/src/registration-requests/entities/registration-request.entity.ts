@@ -4,7 +4,8 @@ export class RegistrationRequest {
     type: 'school' | 'student';
     status: 'pending' | 'approved' | 'rejected';
 
-
+    name?: string;
+    email?: string;
     schoolName?: string;
     schoolDocument?: string;
     studentCode?: string;
