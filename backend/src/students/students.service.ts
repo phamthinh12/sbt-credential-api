@@ -58,12 +58,19 @@ export class StudentsService {
     return { data: student };
   }
 
-  async update(id: string, data: Partial<Student>): Promise<{ data: Student }> {
-    const student = this.mockDb.updateStudent(id, data);
+  async update(id: string, data: Partial<Student>, user: User): Promise<{ data: Student }> {
+    const student = this.mockDb.findStudentById(id);
     if (!student) {
       throw new NotFoundException('Không tìm thấy sinh viên');
     }
-    return { data: student };
+    
+    // School Admin can only update students of their school
+    if (user.role === 'school_admin' && user.schoolId !== student.schoolId) {
+      throw new ForbiddenException('Bạn chỉ có thể cập nhật sinh viên của trường mình');
+    }
+    
+    const updated = this.mockDb.updateStudent(id, data);
+    return { data: updated };
   }
 
   async delete(id: string): Promise<{ message: string }> {
