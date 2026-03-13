@@ -153,6 +153,14 @@ export class MockDatabaseService {
     return this.students.find(s => s.email === email);
   }
 
+  findStudentsByWalletAddress(walletAddress: string): Student | undefined {
+    return this.students.find(s => s.walletAddress?.toLowerCase() === walletAddress.toLowerCase());
+  }
+
+  findSchoolByWalletAddress(walletAddress: string): any | undefined {
+    return this.schools.find(s => s.walletAddress?.toLowerCase() === walletAddress.toLowerCase());
+  }
+
   createStudent(data: Partial<Student>): Student {
     const student: Student = {
       id: `student-${String(this.idCounter++).padStart(3, '0')}`,

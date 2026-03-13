@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Param, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CredentialsService } from './credentials.service';
@@ -18,6 +18,21 @@ export class CredentialsController {
   @ApiOperation({ summary: 'Get all credentials' })
   findAll() {
     return this.credentialsService.findAll();
+  }
+
+  @Get('student/:studentId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Lấy văn bằng theo student (API #21)' })
+  findByStudent(@Param('studentId') studentId: string) {
+    return this.credentialsService.findByStudentId(studentId);
+  }
+
+  @Get('school/:schoolId')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin', 'school_admin')
+  @ApiOperation({ summary: 'Lấy văn bằng theo school (API #22)' })
+  findBySchool(@Param('schoolId') schoolId: string) {
+    return this.credentialsService.findBySchoolId(schoolId);
   }
 
   @Get(':id')
@@ -67,5 +82,21 @@ export class CredentialsController {
   @ApiOperation({ summary: 'Update credential status' })
   update(@Param('id') id: string, @Body() data: any) {
     return this.credentialsService.update(id, data);
+  }
+
+  @Patch(':id/revoke')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin', 'school_admin')
+  @ApiOperation({ summary: 'Thu hồi văn bằng (API #19)' })
+  revoke(@Param('id') id: string) {
+    return this.credentialsService.revoke(id);
+  }
+
+  @Patch(':id/confirm')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('super_admin', 'school_admin')
+  @ApiOperation({ summary: 'Xác nhận văn bằng (API #20)' })
+  confirm(@Param('id') id: string, @Body() data: { txHash?: string; tokenId?: string }) {
+    return this.credentialsService.confirm(id, data);
   }
 }

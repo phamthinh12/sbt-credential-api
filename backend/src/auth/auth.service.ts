@@ -39,4 +39,23 @@ export class AuthService {
       },
     };
   }
+
+  async checkWallet(walletAddress: string) {
+    const student = this.mockDb.findStudentsByWalletAddress(walletAddress);
+    if (student) {
+      return { exists: true, role: 'student', studentId: student.id, name: student.name };
+    }
+
+    const school = this.mockDb.findSchoolByWalletAddress(walletAddress);
+    if (school) {
+      return { exists: true, role: 'school', schoolId: school.id, name: school.name };
+    }
+
+    const request = this.mockDb.findRegistrationRequestByWalletAddress(walletAddress);
+    if (request) {
+      return { exists: true, role: 'pending', requestId: request.id, status: request.status };
+    }
+
+    return { exists: false, message: 'Wallet chưa đăng ký' };
+  }
 }

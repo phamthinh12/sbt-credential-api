@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Credential } from './entities/credential.entity';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 import * as crypto from 'crypto';
-import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CredentialsService {
@@ -16,10 +15,13 @@ export class CredentialsService {
     return this.mockDb.findCredentialById(id);
   }
 
-
-
   async findByStudentId(studentId: string): Promise<Credential[]> {
     return this.mockDb.findCredentialsByStudentId(studentId);
+  }
+
+  async findBySchoolId(schoolId: string): Promise<{ data: Credential[] }> {
+    const all = this.mockDb.findAllCredentials();
+    return { data: all.filter(c => c.schoolId === schoolId) };
   }
 
   async create(data: Partial<Credential>): Promise<Credential> {
@@ -30,10 +32,51 @@ export class CredentialsService {
     return this.mockDb.updateCredential(id, data);
   }
 
+  async revoke(id: string): Promise<any> {
+    const credential = this.mockDb.findCredentialById(id);
+    if (!credential) {
+      throw new NotFoundException('Không tìm thấy văn bằng');
+    }
+
+    if (credential.status === 'revoked') {
+      throw new BadRequestException('Văn bằng đã bị thu hồi trước đó');
+    }
+
+    this.mockDb.updateCredential(id, { status: 'revoked' as any });
+
+    return { 
+      success: true, 
+      message: 'Đã thu hồi văn bằng', 
+      status: 'revoked' 
+    };
+  }
+
+  async confirm(id: string, data: { txHash?: string; tokenId?: string }): Promise<any> {
+    const credential = this.mockDb.findCredentialById(id);
+    if (!credential) {
+      throw new NotFoundException('Không tìm thấy văn bằng');
+    }
+
+    if (credential.status !== 'issued') {
+      throw new BadRequestException('Văn bằng phải ở trạng thái issued mới có thể xác nhận');
+    }
+
+    this.mockDb.updateCredential(id, { 
+      status: 'confirmed' as any,
+      txHash: data.txHash || null,
+      tokenId: data.tokenId || null,
+    });
+
+    return { 
+      success: true, 
+      message: 'Đã xác nhận văn bằng', 
+      status: 'confirmed' 
+    };
+  }
+
   async findByVerifyCode(code: string): Promise<Credential> {
     const credential = this.mockDb.findCredentialByVerifyCode(code);
 
-    // Nếu không tìm thấy, báo lỗi 404 ngay lập tức cho API
     if (!credential) {
       throw new NotFoundException('Mã xác minh không tồn tại');
     }
@@ -41,9 +84,7 @@ export class CredentialsService {
     return credential;
   }
 
-  // Logic chính: So sánh File Hash sử dụng hàm findByVerifyCode ở trên
   async verifyFileIntegrity(code: string, fileBuffer: Buffer) {
-    // Gọi hàm đã gộp ở trên, nếu lỗi nó sẽ dừng tại đây và báo về Client
     const credential = await this.findByVerifyCode(code);
 
     const uploadedFileHash = crypto
@@ -57,7 +98,7 @@ export class CredentialsService {
       isValid,
       message: isValid ? 'Văn bằng hợp lệ' : 'Cảnh báo: Nội dung file đã bị thay đổi!',
       metadata: {
-        studentName: credential.student.name,
+        studentName: credential.student?.name,
         credentialName: credential.name,
         issuedAt: credential.issuedAt
       }

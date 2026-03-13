@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
@@ -21,5 +21,11 @@ export class AuthController {
   @ApiOperation({ summary: 'Logout' })
   async logout(@Request() req: any) {
     return { message: 'Logged out successfully' };
+  }
+
+  @Get('wallet/:address')
+  @ApiOperation({ summary: 'Kiểm tra wallet đã đăng ký chưa (API #2)' })
+  async checkWallet(@Param('address') address: string) {
+    return this.authService.checkWallet(address);
   }
 }
