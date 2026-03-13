@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { Credential } from './entities/credential.entity';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 import * as crypto from 'crypto';
 
@@ -7,28 +6,28 @@ import * as crypto from 'crypto';
 export class CredentialsService {
   constructor(private mockDb: MockDatabaseService) { }
 
-  async findAll(): Promise<Credential[]> {
+  async findAll(): Promise<any[]> {
     return this.mockDb.findAllCredentials();
   }
 
-  async findOne(id: string): Promise<Credential | undefined> {
+  async findOne(id: string): Promise<any> {
     return this.mockDb.findCredentialById(id);
   }
 
-  async findByStudentId(studentId: string): Promise<Credential[]> {
+  async findByStudentId(studentId: string): Promise<any[]> {
     return this.mockDb.findCredentialsByStudentId(studentId);
   }
 
-  async findBySchoolId(schoolId: string): Promise<{ data: Credential[] }> {
+  async findBySchoolId(schoolId: string): Promise<any> {
     const all = this.mockDb.findAllCredentials();
     return { data: all.filter(c => c.schoolId === schoolId) };
   }
 
-  async create(data: Partial<Credential>): Promise<Credential> {
+  async create(data: any): Promise<any> {
     return this.mockDb.createCredential(data);
   }
 
-  async update(id: string, data: Partial<Credential>): Promise<Credential | undefined> {
+  async update(id: string, data: any): Promise<any> {
     return this.mockDb.updateCredential(id, data);
   }
 
@@ -74,7 +73,7 @@ export class CredentialsService {
     };
   }
 
-  async findByVerifyCode(code: string): Promise<Credential> {
+  async findByVerifyCode(code: string): Promise<any> {
     const credential = this.mockDb.findCredentialByVerifyCode(code);
 
     if (!credential) {

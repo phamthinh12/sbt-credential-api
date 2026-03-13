@@ -1,9 +1,10 @@
 $kind: http-request
-name: Create Registration Request
+name: Create Registration Request - Student
 url: "{{baseUrl}}/registration-requests"
 method: POST
 headers:
-  Authorization: ""
+  - key: Authorization
+    value: ""
 body:
   type: json
   content: "{\r

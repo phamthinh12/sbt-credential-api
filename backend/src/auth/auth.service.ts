@@ -11,7 +11,7 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.mockDb.findUserByUsername(username);
-    if (user && user.passwordHash && password === 'password123') {
+    if (user && user.passwordHash && password === 'admin123') {
       return { id: user.id, username: user.username, role: user.role, schoolId: user.schoolId };
     }
     return null;
@@ -57,5 +57,49 @@ export class AuthService {
     }
 
     return { exists: false, message: 'Wallet chưa đăng ký' };
+  }
+
+  async loginWithWallet(walletAddress: string) {
+    const student = this.mockDb.findStudentsByWalletAddress(walletAddress);
+    if (student) {
+      const payload = {
+        sub: student.id,
+        role: 'student',
+        schoolId: student.schoolId,
+        walletAddress: student.walletAddress,
+      };
+      return {
+        access_token: this.jwtService.sign(payload),
+        user: {
+          id: student.id,
+          name: student.name,
+          role: 'student',
+          schoolId: student.schoolId,
+          walletAddress: student.walletAddress,
+        },
+      };
+    }
+
+    const school = this.mockDb.findSchoolByWalletAddress(walletAddress);
+    if (school) {
+      const payload = {
+        sub: school.id,
+        role: 'school_admin',
+        schoolId: school.id,
+        walletAddress: school.walletAddress,
+      };
+      return {
+        access_token: this.jwtService.sign(payload),
+        user: {
+          id: school.id,
+          name: school.name,
+          role: 'school_admin',
+          schoolId: school.id,
+          walletAddress: school.walletAddress,
+        },
+      };
+    }
+
+    throw new UnauthorizedException('Wallet chưa được đăng ký trong hệ thống');
   }
 }

@@ -1,0 +1,13 @@
+$kind: http-request
+name: Get School Requests
+url: "{{baseUrl}}/registration-requests?type=school"
+method: GET
+queryParams:
+  - key: type
+    value: school
+auth:
+  credentials:
+    - key: token
+      value: "{{token}}"
+  type: bearer
+order: 3009335522744093

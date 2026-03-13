@@ -1,9 +1,9 @@
-import { IsString, IsEmail, IsOptional, IsUUID } from 'class-validator';
+import { IsString, IsEmail, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCredentialDto {
-  @ApiProperty()
-  @IsUUID()
+  @ApiProperty({ example: 'student-001' })
+  @IsString()
   studentId: string;
 
   @ApiProperty({ example: 'Certificate of Completion' })

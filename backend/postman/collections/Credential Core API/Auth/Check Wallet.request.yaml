@@ -1,0 +1,5 @@
+$kind: http-request
+name: Check Wallet
+url: "{{baseUrl}}/auth/wallet/0xABCDEF1234567890ABCDEF1234567890ABCDE12"
+method: GET
+order: 4471632515413077

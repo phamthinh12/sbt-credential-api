@@ -1,8 +1,49 @@
 import { Injectable } from '@nestjs/common';
-import { Student } from '../../students/entities/student.entity';
-import { Credential } from '../../credentials/entities/credential.entity';
-import { User } from '../../auth/entities/user.entity';
-import { RegistrationRequest } from '../../registration-requests/entities/registration-request.entity';
+
+interface User {
+  id: string;
+  username: string;
+  passwordHash: string;
+  role: string;
+  schoolId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Student {
+  id: string;
+  schoolId: string;
+  userId: string | null;
+  name: string;
+  email: string;
+  walletAddress: string | null;
+  studentCode: string | null;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Credential {
+  id: string;
+  studentId: string;
+  schoolId: string;
+  student: any;
+  name: string;
+  description: string | null;
+  ipfsHash: string | null;
+  fileHash: string | null;
+  status: string;
+  txHash: string | null;
+  tokenId: string | null;
+  verifyCode: string;
+  issuedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  classification?: string;
+  major?: string;
+  issuerName?: string;
+  expiryDate?: string;
+}
 
 @Injectable()
 export class MockDatabaseService {

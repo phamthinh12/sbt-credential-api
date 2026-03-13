@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Student Requests
+url: "{{baseUrl}}/registration-requests?type=student"
+method: GET
+queryParams:
+  type: student
+auth:
+  type: bearer
+  credentials:
+    token: "{{token}}"
+order: 3337001263972846

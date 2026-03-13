@@ -1,0 +1,20 @@
+$kind: http-request
+name: Create Registration Request - School
+url: "{{baseUrl}}/registration-requests"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"walletAddress\": \"0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1\",\r
+
+    \  \"type\": \"school\",\r
+
+    \  \"name\": \"Đại học FPT\",\r
+
+    \  \"email\": \"admin@fpt.edu.vn\",\r
+
+    \  \"schoolName\": \"Đại học FPT\"\r
+
+    }"
+order: 221759339335032

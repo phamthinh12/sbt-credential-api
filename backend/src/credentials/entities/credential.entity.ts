@@ -1,10 +1,8 @@
-import { Student } from '../../students/entities/student.entity';
-
 export class Credential {
   id: string;
   studentId: string;
   schoolId: string;
-  student: Student;
+  student: any;
   name: string;
   description: string | null;
   ipfsHash: string | null;

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CredentialsService } from './credentials.service';
@@ -15,7 +15,7 @@ export class CredentialsController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Get all credentials' })
+  @ApiOperation({ summary: 'Lấy danh sách văn bằng (API #15)' })
   findAll() {
     return this.credentialsService.findAll();
   }
@@ -36,8 +36,7 @@ export class CredentialsController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Get credential by ID' })
+  @ApiOperation({ summary: 'Xem chi tiết văn bằng (API #17) - Public' })
   findOne(@Param('id') id: string) {
     return this.credentialsService.findOne(id);
   }
@@ -71,7 +70,7 @@ export class CredentialsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Issue new credential' })
+  @ApiOperation({ summary: 'Cấp văn bằng (API #16)' })
   create(@Body() createCredentialDto: CreateCredentialDto) {
     return this.credentialsService.create(createCredentialDto);
   }

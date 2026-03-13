@@ -1,6 +1,18 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { Student } from './entities/student.entity';
 import { MockDatabaseService } from '../common/services/mock-database.service';
+
+interface Student {
+  id: string;
+  schoolId: string;
+  userId: string | null;
+  name: string;
+  email: string;
+  walletAddress: string | null;
+  studentCode: string | null;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 interface User {
   userId: string;
