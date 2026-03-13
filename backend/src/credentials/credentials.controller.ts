@@ -76,14 +76,6 @@ export class CredentialsController {
     return this.credentialsService.create(createCredentialDto, req.user);
   }
 
-  @Put(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('school_admin')
-  @ApiOperation({ summary: 'Update credential - Immutable (không thể sửa sau khi tạo)' })
-  update(@Param('id') id: string, @Body() data: any) {
-    return this.credentialsService.update(id, data);
-  }
-
   @Patch(':id/revoke')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin')

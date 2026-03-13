@@ -49,11 +49,6 @@ export class CredentialsService {
     return this.mockDb.createCredential(data);
   }
 
-  async update(id: string, data: any): Promise<any> {
-    // Credentials are immutable - cannot be updated after creation
-    throw new BadRequestException('Văn bằng không thể sửa sau khi tạo');
-  }
-
   async revoke(id: string, user?: User): Promise<any> {
     const credential = this.mockDb.findCredentialById(id);
     if (!credential) {
