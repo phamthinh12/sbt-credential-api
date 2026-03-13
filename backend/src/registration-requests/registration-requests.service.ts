@@ -42,13 +42,24 @@ export class RegistrationRequestsService {
   findAll(type?: 'school' | 'student', schoolId?: string, user?: User) {
     let requests = this.mockDb.findAllRegistrationRequests();
     
-    if (type) {
-      requests = requests.filter(r => r.type === type);
+    if (type === 'school') {
+      if (user?.role !== 'super_admin') {
+        throw new ForbiddenException('Chỉ Super Admin mới có thể xem danh sách yêu cầu đăng ký School');
+      }
+      requests = requests.filter(r => r.type === 'school');
+    } else if (type === 'student') {
+      if (user?.role !== 'school_admin') {
+        throw new ForbiddenException('Chỉ School Admin mới có thể xem danh sách yêu cầu đăng ký Student');
+      }
+      if (!user?.schoolId) {
+        throw new ForbiddenException('School Admin cần có schoolId');
+      }
+      requests = requests.filter(r => r.type === 'student' && r.schoolId === user.schoolId);
     }
     
-    if (user?.role === 'school_admin' && user.schoolId) {
+    if (user?.role === 'school_admin' && user.schoolId && !type) {
       requests = requests.filter(r => r.schoolId === user.schoolId);
-    } else if (schoolId) {
+    } else if (schoolId && user?.role === 'super_admin') {
       requests = requests.filter(r => r.schoolId === schoolId);
     }
     
