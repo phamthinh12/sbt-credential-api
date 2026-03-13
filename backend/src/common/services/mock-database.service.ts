@@ -359,6 +359,7 @@ export class MockDatabaseService {
     schoolDocument?: string;
     studentCode?: string;
     schoolId?: string;
+    approvedAt?: Date;
   }>) {
     const index = this.registrationRequests.findIndex(r => r.id === id);
     if (index === -1) return undefined;

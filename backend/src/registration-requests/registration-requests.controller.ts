@@ -61,7 +61,7 @@ export class RegistrationRequestsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Từ chối yêu cầu (API #8)' })
-  reject(@Param('id') id: string) {
-    return this.registrationRequestsService.reject(id);
+  reject(@Param('id') id: string, @Request() req: any) {
+    return this.registrationRequestsService.reject(id, req.user);
   }
 }

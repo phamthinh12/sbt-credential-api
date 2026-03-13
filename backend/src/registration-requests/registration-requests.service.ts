@@ -94,7 +94,26 @@ export class RegistrationRequestsService {
       throw new BadRequestException('Yêu cầu đã được xử lý trước đó');
     }
 
-    this.mockDb.updateRegistrationRequest(id, { status: 'approved' });
+    // Authorization check
+    if (request.type === 'student') {
+      // School Admin duyệt - phải cùng schoolId
+      if (user?.role !== 'school_admin') {
+        throw new ForbiddenException('Chỉ School Admin mới có thể duyệt yêu cầu Student');
+      }
+      if (user?.schoolId !== request.schoolId) {
+        throw new ForbiddenException('School Admin chỉ có thể duyệt yêu cầu của trường mình');
+      }
+    } else if (request.type === 'school') {
+      // Super Admin duyệt
+      if (user?.role !== 'super_admin') {
+        throw new ForbiddenException('Chỉ Super Admin mới có thể duyệt yêu cầu School');
+      }
+    }
+
+    this.mockDb.updateRegistrationRequest(id, { 
+      status: 'approved',
+      approvedAt: new Date()
+    });
 
     let result: any = { success: true, message: 'Đã duyệt yêu cầu' };
 
@@ -123,7 +142,7 @@ export class RegistrationRequestsService {
     };
   }
 
-  reject(id: string) {
+  reject(id: string, user?: User) {
     const request = this.mockDb.findRegistrationRequestById(id);
     if (!request) {
       throw new NotFoundException('Không tìm thấy yêu cầu đăng ký');
@@ -131,6 +150,22 @@ export class RegistrationRequestsService {
 
     if (request.status !== 'pending') {
       throw new BadRequestException('Yêu cầu đã được xử lý trước đó');
+    }
+
+    // Authorization check
+    if (request.type === 'student') {
+      // School Admin từ chối - phải cùng schoolId
+      if (user?.role !== 'school_admin') {
+        throw new ForbiddenException('Chỉ School Admin mới có thể từ chối yêu cầu Student');
+      }
+      if (user?.schoolId !== request.schoolId) {
+        throw new ForbiddenException('School Admin chỉ có thể từ chối yêu cầu của trường mình');
+      }
+    } else if (request.type === 'school') {
+      // Super Admin từ chối
+      if (user?.role !== 'super_admin') {
+        throw new ForbiddenException('Chỉ Super Admin mới có thể từ chối yêu cầu School');
+      }
     }
 
     this.mockDb.updateRegistrationRequest(id, { status: 'rejected' });
