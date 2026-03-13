@@ -28,5 +28,9 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`🚀 Application running on: http://localhost:${port}`);
+  
+  if (process.send) {
+    process.send('ready');
+  }
 }
 bootstrap();
