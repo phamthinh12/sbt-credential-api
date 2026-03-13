@@ -21,18 +21,19 @@ export class CredentialsController {
   }
 
   @Get('student/:studentId')
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Lấy văn bằng theo student (API #21)' })
-  findByStudent(@Param('studentId') studentId: string) {
-    return this.credentialsService.findByStudentId(studentId);
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
+  @ApiOperation({ summary: 'Lấy văn bằng theo student (API #21) - Student xem văn bằng của mình' })
+  findByStudent(@Param('studentId') studentId: string, @Request() req: any) {
+    return this.credentialsService.findByStudentId(studentId, req.user);
   }
 
   @Get('school/:schoolId')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy văn bằng theo school (API #22)' })
-  findBySchool(@Param('schoolId') schoolId: string) {
-    return this.credentialsService.findBySchoolId(schoolId);
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Lấy văn bằng theo school (API #22) - School Admin xem văn bằng của trường' })
+  findBySchool(@Param('schoolId') schoolId: string, @Request() req: any) {
+    return this.credentialsService.findBySchoolId(schoolId, req.user);
   }
 
   @Get(':id')

@@ -4,6 +4,7 @@ import * as crypto from 'crypto';
 
 interface User {
   userId: string;
+  sub?: string;
   username: string;
   role: string;
   schoolId?: string;
@@ -21,11 +22,18 @@ export class CredentialsService {
     return this.mockDb.findCredentialById(id);
   }
 
-  async findByStudentId(studentId: string): Promise<any[]> {
+  async findByStudentId(studentId: string, user?: User): Promise<any[]> {
+    // Student can only view their own credentials
+    if (user?.role === 'student' && user.sub !== studentId) {
+      throw new ForbiddenException('Bạn chỉ có thể xem văn bằng của mình');
+    }
     return this.mockDb.findCredentialsByStudentId(studentId);
   }
 
-  async findBySchoolId(schoolId: string): Promise<any> {
+  async findBySchoolId(schoolId: string, user?: User): Promise<any> {
+    if (user?.role === 'school_admin' && user.schoolId !== schoolId) {
+      throw new ForbiddenException('Bạn chỉ có thể xem văn bằng của trường mình');
+    }
     const all = this.mockDb.findAllCredentials();
     return { data: all.filter(c => c.schoolId === schoolId) };
   }
