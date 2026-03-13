@@ -221,3 +221,41 @@ JWT_EXPIRES_IN=7d
 # Frontend  
 NEXT_PUBLIC_API_URL=http://localhost:3000
 ```
+
+
+* Trạng thái triển khai (Mock Data Phase)
+1. Auth & Profile (Hoàn tất)
+POST /auth/login: Đăng nhập Super Admin với tài khoản admin / password123.
+
+GET /schools: Lấy danh sách trường đại học để hỗ trợ SV chọn khi đăng ký (API #13).
+
+2. Quản lý Sinh viên (Hoàn tất)
+GET /students: Trả về danh sách sinh viên theo từng trường.
+
+POST /students: Tạo hồ sơ sinh viên mới trong hệ thống.
+
+3. Văn bằng & Blockchain (Đang triển khai)
+POST /credentials: Cấp bằng mới, yêu cầu tính toán fileHash từ PDF trước khi lưu.
+
+GET /credentials/verify/:code: API public trả về fileHash và txHash để xác minh.
+
+* Cấu trúc Dữ liệu (Entity)
+Các trường dữ liệu được thiết lập Bắt buộc (Required) để đảm bảo tính nhất quán với team Frontend:
+
+Student: Bao gồm id, schoolId, name, email, walletAddress, studentCode, và status.
+
+Credential: Bao gồm id, studentId, schoolId, verifyCode, fileHash, status, txHash, và issuerName.
+
+* Hướng dẫn Test API (Postman)
+Base URL: https://sbt-credential-api.onrender.com (Đã xử lý dứt điểm lỗi khoảng trắng ẩn).
+
+Body Type: Luôn chọn kiểu raw -> JSON khi gửi request.
+
+Authorization: Gắn mã JWT vào Header theo định dạng Bearer <access_token> cho các API yêu cầu bảo mật.
+
+* Kế hoạch tiếp theo (Next Steps)
+Triển khai Nhóm 2: Registration Requests để xử lý luồng duyệt người dùng mới tham gia hệ thống.
+
+Kết nối Socket Gateway để cập nhật trạng thái văn bằng theo thời gian thực từ Blockchain.
+
+Chuyển đổi hoàn toàn sang PostgreSQL v16.13 trên Render khi kết thúc giai đoạn Mock.
