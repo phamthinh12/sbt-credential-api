@@ -48,7 +48,7 @@ export class CredentialsController {
   })
   async verifyFile(
     @Body('verifyCode') code: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: any,
   ) {
     return this.credentialsService.verifyFileIntegrity(code, file.buffer);
   }

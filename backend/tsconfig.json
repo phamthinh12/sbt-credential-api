@@ -2,17 +2,17 @@
   "compilerOptions": {
     "ignoreDeprecations": "5.0",
     "module": "commonjs",
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "target": "ES2021",
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "dist",
     "rootDir": "./src",
     "baseUrl": "./",
-    "incremental": true,
+    "incremental": false,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
@@ -22,9 +22,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "types": [
-      "node",
-      "jest",
-      "multer"
+      "node"
     ]
   }
 }

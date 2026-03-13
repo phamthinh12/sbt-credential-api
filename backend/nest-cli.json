@@ -5,6 +5,7 @@
   "compilerOptions": {
     "deleteOutDir": false,
     "webpack": false,
-    "tsConfigPath": "tsconfig.json"
+    "tsConfigPath": "tsconfig.json",
+    "incremental": false
   }
 }
