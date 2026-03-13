@@ -1,14 +1,14 @@
 $kind: http-request
-name: Login School Admin
-url: "{{baseUrl}}/auth/login"
+name: Login with Wallet
+url: "{{baseUrl}}/auth/login/wallet"
 method: POST
 body:
   type: json
-  content: '{"username":"school_admin","password":"password123"}'
+  content: '{ "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1" }'
 scripts:
   - type: afterResponse
     code: "var jsonData = JSON.parse(responseBody);\r
 
       pm.environment.set(\"token\", jsonData.access_token);\r\n"
     language: text/javascript
-order: 4452741890228028
+order: 4477522720377566

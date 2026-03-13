@@ -1,5 +1,5 @@
 $kind: http-request
 name: Check Wallet
-url: "{{baseUrl}}/auth/wallet/0xABCDEF1234567890ABCDEF1234567890ABCDE12"
+url: "{{baseUrl}}/auth/wallet/0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1"
 method: GET
 order: 4471632515413077
