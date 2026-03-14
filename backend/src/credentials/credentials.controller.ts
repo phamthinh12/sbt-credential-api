@@ -15,9 +15,9 @@ export class CredentialsController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách văn bằng (API #15)' })
-  findAll() {
-    return this.credentialsService.findAll();
+  @ApiOperation({ summary: 'Lấy danh sách văn bằng (API #15) - School xem của trường, Admin xem tất cả' })
+  findAll(@Request() req: any) {
+    return this.credentialsService.findAll(req.user);
   }
 
   @Get('student/:studentId')

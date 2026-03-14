@@ -14,8 +14,23 @@ interface User {
 export class CredentialsService {
   constructor(private mockDb: MockDatabaseService) { }
 
-  async findAll(): Promise<any[]> {
-    return this.mockDb.findAllCredentials();
+  async findAll(user?: User): Promise<any> {
+    let credentials = this.mockDb.findAllCredentials();
+    const now = new Date();
+    
+    credentials = credentials.map(cred => {
+      if (cred.expiryDate && new Date(cred.expiryDate) < now && cred.status === 'confirmed') {
+        this.mockDb.updateCredential(cred.id, { status: 'expired' as any });
+        return { ...cred, status: 'expired' };
+      }
+      return cred;
+    });
+
+    if (user?.role === 'school_admin') {
+      credentials = credentials.filter(c => c.schoolId === user.schoolId);
+    }
+
+    return { data: credentials };
   }
 
   async findOne(id: string): Promise<any> {
@@ -39,14 +54,21 @@ export class CredentialsService {
   }
 
   async create(data: any, user: User): Promise<any> {
-    // School Admin can only create credential for their school
     if (user.role === 'school_admin') {
       if (!user.schoolId) {
         throw new ForbiddenException('School Admin cần có schoolId');
       }
       data.schoolId = user.schoolId;
     }
-    return this.mockDb.createCredential(data);
+    const credential = this.mockDb.createCredential(data);
+    return {
+      id: credential.id,
+      studentId: credential.studentId,
+      name: credential.name,
+      status: credential.status,
+      verifyCode: credential.verifyCode,
+      createdAt: credential.createdAt
+    };
   }
 
   async revoke(id: string, user?: User): Promise<any> {
