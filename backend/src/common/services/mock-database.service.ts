@@ -159,15 +159,7 @@ export class MockDatabaseService {
     ];
 
     // 4. Đồng bộ Registration Requests
-    this.registrationRequests = [
-      {
-        id: 'req-001',
-        walletAddress: '0x9999999999999999999999999999999999999999',
-        type: 'school',
-        schoolName: 'Đại học FPT',
-        status: 'pending'
-      },
-    ];
+    this.registrationRequests = [];
   }
 
   findAllUsers(): User[] {
