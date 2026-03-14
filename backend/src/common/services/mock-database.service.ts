@@ -110,7 +110,6 @@ export class MockDatabaseService {
     ];
     this.schools = [
       { id: 'school-001', name: 'Đại học Bách Khoa', walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1', isActive: true },
-      { id: 'school-002', name: 'Đại học Kinh Tế', walletAddress: '0x8Ba1f109551bD432803012645Ac136ddd64DBA7', isActive: true },
     ];
 
     // 3. Đồng bộ Credentials (Thêm metadata Blockchain)
@@ -135,27 +134,6 @@ export class MockDatabaseService {
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-15'),
       },
-      {
-        id: 'cred-005',
-        studentId: 'student-004', // Phạm Thị D
-        schoolId: 'school-002', // Đại học Kinh Tế
-        name: 'Chứng chỉ Blockchain Basics',
-        description: 'Hoàn thành khóa học Blockchain Basics',
-        status: 'confirmed',
-        txHash: '0xaaa111bbb222ccc',
-        tokenId: '4',
-        verifyCode: 'CRED-20240215-MNO456',
-        issuedAt: new Date('2024-02-15') as any,
-        ipfsHash: 'QmXyZ5555666677777888',
-        fileHash: 'd4e5f678901234567890abcdef01234567890abcdef01234567890a',
-        student: { name: 'Phạm Thị D', email: 'd.phamthi@example.com' } as any,
-        classification: 'Xuất sắc',
-        major: 'Công nghệ Blockchain',
-        issuerName: 'Trường Đại học Kinh Tế',
-        expiryDate: '2027-02-15' as any,
-        createdAt: new Date('2024-02-15'),
-        updatedAt: new Date('2024-02-15'),
-      }
     ];
 
     // 4. Đồng bộ Registration Requests
