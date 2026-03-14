@@ -1,5 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 import { MockDatabaseService } from '../common/services/mock-database.service';
+import { MintCredentialJobData } from '../queue/credential.processor';
 import * as crypto from 'crypto';
 
 interface User {
@@ -10,9 +13,25 @@ interface User {
   schoolId?: string;
 }
 
+interface CreateCredentialData {
+  studentId: string;
+  name: string;
+  description?: string;
+  classification?: string;
+  major?: string;
+  issuerName?: string;
+  fileHash?: string;
+  expiryDate?: string;
+  ipfsHash?: string;
+  schoolId?: string;
+}
+
 @Injectable()
 export class CredentialsService {
-  constructor(private mockDb: MockDatabaseService) { }
+  constructor(
+    private mockDb: MockDatabaseService,
+    @InjectQueue('credential-mint') private mintQueue: Queue,
+  ) { }
 
   async findAll(user?: User): Promise<any> {
     let credentials = this.mockDb.findAllCredentials();
@@ -53,22 +72,59 @@ export class CredentialsService {
     return { data: all.filter(c => c.schoolId === schoolId) };
   }
 
-  async create(data: any, user: User): Promise<any> {
+  async create(data: CreateCredentialData, user: User): Promise<any> {
     if (user.role === 'school_admin') {
       if (!user.schoolId) {
         throw new ForbiddenException('School Admin cần có schoolId');
       }
       data.schoolId = user.schoolId;
     }
-    const credential = this.mockDb.createCredential(data);
+
+    const documentHash = data.fileHash || this.generateDocumentHash(data);
+    const graduationYear = data.expiryDate ? new Date(data.expiryDate).getFullYear() : new Date().getFullYear();
+
+    const credential = this.mockDb.createCredential({
+      ...data,
+      fileHash: documentHash,
+    });
+
+    const student = this.mockDb.findStudentById(data.studentId);
+
+    const jobData: MintCredentialJobData = {
+      credentialId: credential.id,
+      studentId: student?.studentCode || data.studentId,
+      studentName: student?.name || 'Unknown',
+      degreeTitle: data.name,
+      recipientWallet: student?.walletAddress || '',
+      ipfsCID: data.ipfsHash || '',
+      documentHash: documentHash,
+      graduationYear: graduationYear,
+      schoolId: credential.schoolId,
+      remarks: data.description || '',
+    };
+
+    this.mintQueue.add('mint-credential', jobData, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      },
+    });
+
     return {
       id: credential.id,
       studentId: credential.studentId,
       name: credential.name,
       status: credential.status,
       verifyCode: credential.verifyCode,
-      createdAt: credential.createdAt
+      createdAt: credential.createdAt,
+      message: 'Văn bằng đang được xác nhận trên blockchain'
     };
+  }
+
+  private generateDocumentHash(data: CreateCredentialData): string {
+    const content = `${data.studentId}-${data.name}-${Date.now()}`;
+    return crypto.createHash('sha256').update(content).digest('hex');
   }
 
   async revoke(id: string, user?: User): Promise<any> {

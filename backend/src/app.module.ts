@@ -8,6 +8,8 @@ import { AppController } from './app.controller';
 import { MockDatabaseModule } from './common/mock-database.module';
 import { SchoolsModule } from './schools/schools.module';
 import { RegistrationRequestsModule } from './registration-requests/registration-requests.module';
+import { BlockchainModule } from './blockchain/blockchain.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { RegistrationRequestsModule } from './registration-requests/registration
       envFilePath: '.env',
     }),
     MockDatabaseModule,
+    BlockchainModule,
+    QueueModule,
     AuthModule,
     StudentsModule,
     CredentialsModule,
