@@ -115,7 +115,7 @@ export class MockDatabaseService {
     // 3. Đồng bộ Credentials (Thêm metadata Blockchain)
     this.credentials = [
       {
-        id: 'cred-001',
+        id: 'cred-000',
         studentId: 'student-001',
         schoolId: 'school-001',
         name: 'Cử nhân Công nghệ Thông tin',
