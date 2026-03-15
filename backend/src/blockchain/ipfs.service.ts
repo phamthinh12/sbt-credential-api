@@ -19,6 +19,9 @@ export class IpfsService {
     this.apiKey = this.configService.get<string>('IPFS_API_KEY') || '';
     this.apiSecret = this.configService.get<string>('IPFS_API_SECRET') || '';
     this.gatewayUrl = 'https://gateway.pinata.cloud';
+    
+    console.log('[IPFS] API Key loaded:', this.apiKey ? 'YES' : 'NO');
+    console.log('[IPFS] API Secret loaded:', this.apiSecret ? 'YES' : 'NO');
   }
 
   async uploadFile(buffer: Buffer, filename: string): Promise<IpfsUploadResult> {
