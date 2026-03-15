@@ -44,7 +44,7 @@ export class BlockchainService {
         return;
       }
 
-      this.provider = new ethers.JsonRpcProvider(rpcUrl);
+      this.provider = new ethers.JsonRpcProvider(rpcUrl, 80002);
       
       if (privateKey && privateKey !== 'your_private_key_here') {
         this.wallet = new ethers.Wallet(privateKey, this.provider);
