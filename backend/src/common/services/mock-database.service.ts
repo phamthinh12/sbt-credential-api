@@ -31,6 +31,7 @@ interface Credential {
   name: string;
   description: string | null;
   ipfsHash: string | null;
+  ipfsUrl: string | null;
   fileHash: string | null;
   status: string;
   txHash: string | null;
@@ -114,6 +115,7 @@ export class MockDatabaseService {
         verifyCode: 'CRED-20240115-ABC123',
         issuedAt: new Date('2024-01-15') as any,
         ipfsHash: 'QmXyZ1234567890abcdef',
+        ipfsUrl: 'https://gateway.pinata.cloud/ipfs/QmXyZ1234567890abcdef',
         fileHash: 'a1b2c3d4e5f678901234567890abcdef1234567890abcdef12345678',
         student: { name: 'Nguyễn Văn A', email: 'a.nguyenvan@example.com' } as any,
         classification: 'Giỏi',
@@ -235,6 +237,7 @@ export class MockDatabaseService {
       name: data.name,
       description: data.description || null,
       ipfsHash: data.ipfsHash || null,
+      ipfsUrl: data.ipfsUrl || null,
       fileHash: data.fileHash || null,
       classification: data.classification || null,
       major: data.major || null,

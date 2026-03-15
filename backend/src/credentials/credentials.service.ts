@@ -114,6 +114,7 @@ export class CredentialsService {
       issuerName: body.issuerName || '',
       fileHash: fileHash,
       ipfsHash: ipfsHash,
+      ipfsUrl: ipfsResult?.url || null,
       expiryDate: body.expiryDate || null,
       schoolId: user.schoolId,
     };
