@@ -17,6 +17,9 @@ import { AuthModule } from '../auth/auth.module';
           return {
             connection: {
               url: redisUrl,
+              maxRetriesPerRequest: 1,
+              connectTimeout: 5000,
+              commandTimeout: 5000,
             },
           };
         }
@@ -26,6 +29,9 @@ import { AuthModule } from '../auth/auth.module';
             host: configService.get('REDIS_HOST') || 'localhost',
             port: parseInt(configService.get('REDIS_PORT') || '6379'),
             password: configService.get('REDIS_PASSWORD') || undefined,
+            maxRetriesPerRequest: 1,
+            connectTimeout: 5000,
+            commandTimeout: 5000,
           },
         };
       },

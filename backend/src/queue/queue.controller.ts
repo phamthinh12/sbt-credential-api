@@ -18,29 +18,37 @@ export class QueueController {
   @Roles('super_admin', 'school_admin')
   @ApiOperation({ summary: 'Kiểm tra job status của credential' })
   async getJobStatus(@Param('credentialId') credentialId: string) {
-    const jobs = await this.mintQueue.getJobs();
-    
-    const relevantJob = jobs.find(job => job.data.credentialId === credentialId);
-    
-    if (!relevantJob) {
-      return { 
-        credentialId, 
-        status: 'not_found',
-        message: 'Job không tồn tại hoặc đã hoàn thành' 
+    try {
+      const jobs = await this.mintQueue.getJobs();
+      
+      const relevantJob = jobs.find(job => job.data.credentialId === credentialId);
+      
+      if (!relevantJob) {
+        return { 
+          credentialId, 
+          status: 'not_found',
+          message: 'Job không tồn tại hoặc đã hoàn thành' 
+        };
+      }
+
+      return {
+        credentialId,
+        jobId: relevantJob.id,
+        status: relevantJob.isCompleted() ? 'completed' : 
+               relevantJob.isFailed() ? 'failed' : 
+               relevantJob.isActive() ? 'active' : 'waiting',
+        attempts: relevantJob.attemptsMade,
+        failedReason: relevantJob.failedReason,
+        processedOn: relevantJob.processedOn,
+        finishedOn: relevantJob.finishedOn,
+      };
+    } catch (error) {
+      return {
+        error: error.message,
+        credentialId,
+        status: 'error'
       };
     }
-
-    return {
-      credentialId,
-      jobId: relevantJob.id,
-      status: relevantJob.isCompleted() ? 'completed' : 
-             relevantJob.isFailed() ? 'failed' : 
-             relevantJob.isActive() ? 'active' : 'waiting',
-      attempts: relevantJob.attemptsMade,
-      failedReason: relevantJob.failedReason,
-      processedOn: relevantJob.processedOn,
-      finishedOn: relevantJob.finishedOn,
-    };
   }
 
   @Get('failed-jobs')
@@ -48,16 +56,24 @@ export class QueueController {
   @Roles('super_admin')
   @ApiOperation({ summary: 'Lấy danh sách job thất bại' })
   async getFailedJobs() {
-    const jobs = await this.mintQueue.getFailed();
-    
-    return {
-      count: jobs.length,
-      jobs: jobs.map(job => ({
-        id: job.id,
-        credentialId: job.data.credentialId,
-        failedReason: job.failedReason,
-        failedAt: job.failedReason ? new Date() : null,
-      }))
-    };
+    try {
+      const jobs = await this.mintQueue.getFailed();
+      
+      return {
+        count: jobs.length,
+        jobs: jobs.map(job => ({
+          id: job.id,
+          credentialId: job.data.credentialId,
+          failedReason: job.failedReason,
+          failedAt: job.failedReason ? new Date() : null,
+        }))
+      };
+    } catch (error) {
+      return {
+        error: error.message,
+        count: 0,
+        jobs: []
+      };
+    }
   }
 }
