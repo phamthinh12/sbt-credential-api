@@ -191,33 +191,6 @@ export class CredentialsService {
     };
   }
 
-  async confirm(id: string, data: { txHash?: string; tokenId?: string }, user?: User): Promise<any> {
-    const credential = this.mockDb.findCredentialById(id);
-    if (!credential) {
-      throw new NotFoundException('Không tìm thấy văn bằng');
-    }
-
-    if (credential.status !== 'issued') {
-      throw new BadRequestException('Văn bằng phải ở trạng thái issued mới có thể xác nhận');
-    }
-
-    if (user?.role === 'school_admin' && user.schoolId !== credential.schoolId) {
-      throw new ForbiddenException('Bạn chỉ có thể xác nhận văn bằng của trường mình');
-    }
-
-    this.mockDb.updateCredential(id, { 
-      status: 'confirmed' as any,
-      txHash: data.txHash || null,
-      tokenId: data.tokenId || null,
-    });
-
-    return { 
-      success: true, 
-      message: 'Đã xác nhận văn bằng', 
-      status: 'confirmed' 
-    };
-  }
-
   async findByVerifyCode(code: string): Promise<any> {
     const credential = this.mockDb.findCredentialByVerifyCode(code);
 

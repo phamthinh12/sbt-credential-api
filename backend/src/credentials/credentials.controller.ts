@@ -105,12 +105,4 @@ export class CredentialsController {
   revoke(@Param('id') id: string, @Request() req: any) {
     return this.credentialsService.revoke(id, req.user);
   }
-
-  @Patch(':id/confirm')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('school_admin')
-  @ApiOperation({ summary: 'Xác nhận văn bằng (API #20) - School Admin xác nhận văn bằng' })
-  confirm(@Param('id') id: string, @Body() data: { txHash?: string; tokenId?: string }, @Request() req: any) {
-    return this.credentialsService.confirm(id, data, req.user);
-  }
 }
