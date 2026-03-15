@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CredentialProcessor } from './credential.processor';
+import { QueueController } from './queue.controller';
 import { BlockchainModule } from '../blockchain/blockchain.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { BlockchainModule } from '../blockchain/blockchain.module';
       name: 'credential-mint',
     }),
     BlockchainModule,
+    AuthModule,
   ],
+  controllers: [QueueController],
   providers: [CredentialProcessor],
   exports: [BullModule],
 })

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, UseGuards, UseInterceptors, UploadedFile, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CredentialsService } from './credentials.service';
@@ -71,9 +71,31 @@ export class CredentialsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin')
-  @ApiOperation({ summary: 'Cấp văn bằng (API #16) - School Admin tạo văn bằng cho sinh viên' })
-  create(@Body() createCredentialDto: CreateCredentialDto, @Request() req: any) {
-    return this.credentialsService.create(createCredentialDto, req.user);
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Cấp văn bằng (API #16) - School Admin tạo văn bằng cho sinh viên, upload file PDF' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file', 'studentId', 'name', 'classification', 'major', 'issuerName'],
+      properties: {
+        file: { type: 'string', format: 'binary', description: 'File PDF văn bằng' },
+        studentId: { type: 'string', description: 'ID của sinh viên' },
+        name: { type: 'string', description: 'Tên văn bằng' },
+        description: { type: 'string', description: 'Mô tả' },
+        classification: { type: 'string', description: 'Xếp loại' },
+        major: { type: 'string', description: 'Chuyên ngành' },
+        issuerName: { type: 'string', description: 'Tên đơn vị cấp' },
+        expiryDate: { type: 'string', description: 'Ngày hết hạn (YYYY-MM-DD)' },
+      },
+    },
+  })
+  async create(
+    @UploadedFile() file: any,
+    @Body() body: any,
+    @Request() req: any,
+  ) {
+    return this.credentialsService.createWithFile(file, body, req.user);
   }
 
   @Patch(':id/revoke')

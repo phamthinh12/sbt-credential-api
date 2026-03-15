@@ -3,6 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { MockDatabaseService } from '../common/services/mock-database.service';
 import { MintCredentialJobData } from '../queue/credential.processor';
+import { IpfsService } from '../blockchain/ipfs.service';
 import * as crypto from 'crypto';
 
 interface User {
@@ -20,9 +21,7 @@ interface CreateCredentialData {
   classification?: string;
   major?: string;
   issuerName?: string;
-  fileHash?: string;
   expiryDate?: string;
-  ipfsHash?: string;
   schoolId?: string;
 }
 
@@ -31,6 +30,7 @@ export class CredentialsService {
   constructor(
     private mockDb: MockDatabaseService,
     @InjectQueue('credential-mint') private mintQueue: Queue,
+    private ipfsService: IpfsService,
   ) { }
 
   async findAll(user?: User): Promise<any> {
@@ -72,35 +72,61 @@ export class CredentialsService {
     return { data: all.filter(c => c.schoolId === schoolId) };
   }
 
-  async create(data: CreateCredentialData, user: User): Promise<any> {
+  async createWithFile(file: any, body: any, user: User): Promise<any> {
     if (user.role === 'school_admin') {
       if (!user.schoolId) {
         throw new ForbiddenException('School Admin cần có schoolId');
       }
-      data.schoolId = user.schoolId;
     }
 
-    const documentHash = data.fileHash || this.generateDocumentHash(data);
-    const graduationYear = data.expiryDate ? new Date(data.expiryDate).getFullYear() : new Date().getFullYear();
+    if (!file) {
+      throw new BadRequestException('Vui lòng upload file PDF văn bằng');
+    }
 
-    const credential = this.mockDb.createCredential({
-      ...data,
-      fileHash: documentHash,
-    });
+    const fileHash = crypto.createHash('sha256').update(file.buffer).digest('hex');
+    
+    let ipfsResult = null;
+    let ipfsHash = null;
+    
+    try {
+      if (this.ipfsService.isConfigured()) {
+        ipfsResult = await this.ipfsService.uploadFile(file.buffer, file.originalname);
+        ipfsHash = ipfsResult.cid;
+      }
+    } catch (error) {
+      console.error('IPFS upload failed:', error.message);
+    }
 
-    const student = this.mockDb.findStudentById(data.studentId);
+    const graduationYear = body.expiryDate ? new Date(body.expiryDate).getFullYear() : new Date().getFullYear();
+
+    const credentialData = {
+      studentId: body.studentId,
+      name: body.name,
+      description: body.description || '',
+      classification: body.classification || '',
+      major: body.major || '',
+      issuerName: body.issuerName || '',
+      fileHash: fileHash,
+      ipfsHash: ipfsHash,
+      expiryDate: body.expiryDate || null,
+      schoolId: user.schoolId,
+    };
+
+    const credential = this.mockDb.createCredential(credentialData);
+
+    const student = this.mockDb.findStudentById(body.studentId);
 
     const jobData: MintCredentialJobData = {
       credentialId: credential.id,
-      studentId: student?.studentCode || data.studentId,
-      studentName: student?.name || 'Unknown',
-      degreeTitle: data.name,
+      studentId: student?.studentCode || body.studentId,
+      studentName: student?.name || body.name,
+      degreeTitle: body.name,
       recipientWallet: student?.walletAddress || '',
-      ipfsCID: data.ipfsHash || '',
-      documentHash: documentHash,
+      ipfsCID: ipfsHash || '',
+      documentHash: fileHash,
       graduationYear: graduationYear,
       schoolId: credential.schoolId,
-      remarks: data.description || '',
+      remarks: body.description || '',
     };
 
     this.mintQueue.add('mint-credential', jobData, {
@@ -117,6 +143,9 @@ export class CredentialsService {
       name: credential.name,
       status: credential.status,
       verifyCode: credential.verifyCode,
+      fileHash: fileHash,
+      ipfsHash: ipfsHash,
+      ipfsUrl: ipfsResult?.url || null,
       createdAt: credential.createdAt,
       message: 'Văn bằng đang được xác nhận trên blockchain'
     };
