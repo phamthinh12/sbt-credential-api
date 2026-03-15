@@ -28,6 +28,7 @@ export class CredentialProcessor extends WorkerHost {
     private mockDb: MockDatabaseService,
   ) {
     super();
+    this.logger.log('CredentialProcessor initialized');
   }
 
   async process(job: Job<MintCredentialJobData>): Promise<any> {
