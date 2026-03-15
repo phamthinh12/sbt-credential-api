@@ -88,10 +88,16 @@ export class CredentialsService {
     let ipfsResult = null;
     let ipfsHash = null;
     
+    console.log('[Credential] ipfsService isConfigured:', this.ipfsService.isConfigured());
+    
     try {
       if (this.ipfsService.isConfigured()) {
+        console.log('[Credential] Uploading to IPFS...');
         ipfsResult = await this.ipfsService.uploadFile(file.buffer, file.originalname);
         ipfsHash = ipfsResult.cid;
+        console.log('[Credential] IPFS upload success:', ipfsHash);
+      } else {
+        console.log('[Credential] IPFS not configured, skipping upload');
       }
     } catch (error) {
       console.error('IPFS upload failed:', error.message);
