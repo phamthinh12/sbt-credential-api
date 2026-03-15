@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { MockDatabaseService } from '../common/services/mock-database.service';
-import { MintCredentialJobData } from '../queue/credential.processor';
 import { IpfsService } from '../blockchain/ipfs.service';
+import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
+import { SimpleQueueService } from '../queue/simple-queue.service';
 import * as crypto from 'crypto';
 
 interface User {
@@ -29,8 +28,9 @@ interface CreateCredentialData {
 export class CredentialsService {
   constructor(
     private mockDb: MockDatabaseService,
-    @InjectQueue('credential-mint') private mintQueue: Queue,
     private ipfsService: IpfsService,
+    private blockchainService: BlockchainService,
+    private simpleQueueService: SimpleQueueService,
   ) { }
 
   async findAll(user?: User): Promise<any> {
@@ -123,26 +123,18 @@ export class CredentialsService {
 
     const student = this.mockDb.findStudentById(body.studentId);
 
-    const jobData: MintCredentialJobData = {
-      credentialId: credential.id,
+    const mintParams: MintDiplomaParams = {
+      recipient: student?.walletAddress || '',
       studentId: student?.studentCode || body.studentId,
       studentName: student?.name || body.name,
       degreeTitle: body.name,
-      recipientWallet: student?.walletAddress || '',
       ipfsCID: ipfsHash || '',
       documentHash: fileHash,
       graduationYear: graduationYear,
-      schoolId: credential.schoolId,
       remarks: body.description || '',
     };
 
-    this.mintQueue.add('mint-credential', jobData, {
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 5000,
-      },
-    });
+    this.simpleQueueService.addMintJob(credential.id, mintParams);
 
     return {
       id: credential.id,

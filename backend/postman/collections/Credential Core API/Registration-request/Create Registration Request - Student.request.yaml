@@ -3,21 +3,20 @@ name: Create Registration Request - Student
 url: "{{baseUrl}}/registration-requests"
 method: POST
 headers:
-  - key: Authorization
-    value: ""
+  Authorization: ""
 body:
   type: json
-  content: "{\r
-
-    \  \"walletAddress\": \"0x1234567890abcdef1234567890abcdef12345678\",\r
+  content: "{\"walletAddress\": \"0xcd3B766CCDd6AE721141F452C550Ca635964ce71\",\r
 
     \  \"type\": \"student\",\r
 
-    \  \"studentCode\": \"SV-TEST-002\",\r
+    \  \"name\": \"Trần Thanh Test\",\r
 
-    \  \"schoolId\": \"school-001\"\r
+    \  \"email\": \"test@email.com\",\r
 
-    }"
+    \  \"studentCode\": \"TEST001\",\r
+
+    \  \"schoolId\": \"school-002\"}"
 auth:
   type: noauth
 order: 1773225003961

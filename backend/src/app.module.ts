@@ -10,7 +10,6 @@ import { SchoolsModule } from './schools/schools.module';
 import { RegistrationRequestsModule } from './registration-requests/registration-requests.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { IpfsModule } from './blockchain/ipfs.module';
-import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -21,13 +20,12 @@ import { QueueModule } from './queue/queue.module';
     MockDatabaseModule,
     BlockchainModule,
     IpfsModule,
-    QueueModule,
     AuthModule,
     StudentsModule,
     CredentialsModule,
     EventsModule,
     SchoolsModule,
-    RegistrationRequestsModule,],
+    RegistrationRequestsModule],
   controllers: [AppController],
 })
 export class AppModule { }

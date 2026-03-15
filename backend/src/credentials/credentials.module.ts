@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
 import { CredentialsController } from './credentials.controller';
 import { CredentialsService } from './credentials.service';
 import { AuthModule } from '../auth/auth.module';
+import { SimpleQueueModule } from '../queue/simple-queue.module';
 
 @Module({
   imports: [
     AuthModule,
-    BullModule.registerQueue({ name: 'credential-mint' }),
+    SimpleQueueModule,
   ],
   controllers: [CredentialsController],
   providers: [CredentialsService],

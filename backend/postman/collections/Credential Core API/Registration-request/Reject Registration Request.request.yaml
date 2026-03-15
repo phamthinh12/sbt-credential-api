@@ -1,6 +1,6 @@
 $kind: http-request
 name: Reject Registration Request
-url: "{{baseUrl}}/registration-requests/req-001/reject"
+url: "{{baseUrl}}/registration-requests/req-004/reject"
 method: PATCH
 auth:
   type: bearer

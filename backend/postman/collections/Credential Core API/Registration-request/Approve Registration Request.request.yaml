@@ -3,7 +3,7 @@ name: Approve Registration Request
 url: "{{baseUrl}}/registration-requests/:id/approve"
 method: PATCH
 pathVariables:
-  id: req-001
+  id: req-003
 auth:
   type: bearer
   credentials:

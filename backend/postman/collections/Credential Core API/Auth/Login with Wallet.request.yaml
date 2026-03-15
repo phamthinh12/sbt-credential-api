@@ -4,7 +4,7 @@ url: "{{baseUrl}}/auth/login/wallet"
 method: POST
 body:
   type: json
-  content: '{ "walletAddress": "0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1" }'
+  content: '{"walletAddress": "0xcdc9C282D271abda4B73454b9E7ba9BDd911B109"}'
 scripts:
   - type: afterResponse
     code: "var jsonData = JSON.parse(responseBody);\r
