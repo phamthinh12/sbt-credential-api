@@ -12,15 +12,42 @@ import { AuthModule } from '../auth/auth.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const redisUrl = configService.get('REDIS_URL');
+        const redisHost = configService.get('REDIS_HOST');
         
         if (redisUrl) {
-          const finalUrl = redisUrl.replace('redis://', 'rediss://');
+          const isUpstash = redisUrl.includes('upstash');
+          if (isUpstash) {
+            const url = new URL(redisUrl.replace('redis://', 'rediss://'));
+            const password = url.password;
+            url.password = '';
+            return {
+              connection: {
+                host: url.hostname,
+                port: 6380,
+                password: password,
+                tls: {},
+                lazyConnect: true,
+              },
+            };
+          }
           return {
             connection: {
-              url: finalUrl,
-              tls: {
-                rejectUnauthorized: false,
-              },
+              url: redisUrl.replace('redis://', 'rediss://'),
+              tls: {},
+              lazyConnect: true,
+            },
+          };
+        }
+        
+        if (redisHost?.includes('upstash')) {
+          const password = configService.get('REDIS_PASSWORD');
+          return {
+            connection: {
+              host: redisHost,
+              port: 6380,
+              password: password,
+              tls: {},
+              lazyConnect: true,
             },
           };
         }
