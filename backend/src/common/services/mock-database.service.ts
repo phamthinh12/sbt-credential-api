@@ -85,31 +85,19 @@ export class MockDatabaseService {
     this.students = [
       {
         id: 'student-001',
-        schoolId: 'school-001', // Link tới Đại học Bách Khoa
+        schoolId: 'school-001',
         userId: 'user-student-001',
         name: 'Nguyễn Văn A',
         email: 'a.nguyenvan@example.com',
-        walletAddress: '0x1111111111111111111111111111111111111111',
+        walletAddress: '0xcd3B766CCDd6AE721141F452C550Ca635964ce71',
         studentCode: 'SV001',
         status: 'active',
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-15'),
       },
-      {
-        id: 'student-002',
-        schoolId: 'school-001',
-        userId: 'user-student-002',
-        name: 'Trần Thị B',
-        email: 'b.tranthi@example.com',
-        walletAddress: '0x2222222222222222222222222222222222222222',
-        studentCode: 'SV002',
-        status: 'active',
-        createdAt: new Date('2024-01-16'),
-        updatedAt: new Date('2024-01-16'),
-      },
     ];
     this.schools = [
-      { id: 'school-001', name: 'Đại học Bách Khoa', walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0Eb1', isActive: true },
+      { id: 'school-001', name: 'Đại học Bách Khoa', walletAddress: '0xA30EEbA7AD3712fDf080b0C2aadB5906B05347E7', isActive: true },
     ];
 
     // 3. Đồng bộ Credentials (Thêm metadata Blockchain)

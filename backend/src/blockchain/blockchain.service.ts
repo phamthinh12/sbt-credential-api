@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { ethers, Contract, TransactionResponse } from 'ethers';
 import * as DiplomaRegistryABI from './abis/DiplomaRegistry.json';
 
+const CONTRACT_ABI = (DiplomaRegistryABI as any).default || DiplomaRegistryABI;
+
 export interface MintDiplomaParams {
   recipient: string;
   studentId: string;
@@ -46,10 +48,10 @@ export class BlockchainService {
       
       if (privateKey && privateKey !== 'your_private_key_here') {
         this.wallet = new ethers.Wallet(privateKey, this.provider);
-        this.contract = new Contract(contractAddress, DiplomaRegistryABI, this.wallet);
+        this.contract = new Contract(contractAddress, CONTRACT_ABI, this.wallet);
       } else {
         this.logger.warn('PRIVATE_KEY not configured - using provider only (read-only mode)');
-        this.contract = new Contract(contractAddress, DiplomaRegistryABI, this.provider);
+        this.contract = new Contract(contractAddress, CONTRACT_ABI, this.provider);
       }
 
       this.isInitialized = true;
