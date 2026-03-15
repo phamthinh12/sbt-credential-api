@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ethers, Contract, TransactionResponse, toBeHex } from 'ethers';
+import { ethers, Contract, TransactionResponse, zeroPadValue, toUtf8Bytes } from 'ethers';
 import * as DiplomaRegistryABI from './abis/DiplomaRegistry.json';
 
 const CONTRACT_ABI = (DiplomaRegistryABI as any).default || DiplomaRegistryABI;
@@ -69,13 +69,18 @@ export class BlockchainService {
     try {
       this.logger.log(`Issuing diploma for student: ${params.studentId}`);
 
+      const docHashHex = params.documentHash.startsWith('0x') 
+        ? params.documentHash 
+        : '0x' + params.documentHash;
+      const docHashBytes = ethers.getBytes(docHashHex);
+
       const tx: TransactionResponse = await this.contract.issueDiploma(
         params.recipient,
         params.studentId,
         params.studentName,
         params.degreeTitle,
         params.ipfsCID || '',
-        params.documentHash, // bytes32 - keep as string, ethers will convert
+        docHashBytes,
         params.graduationYear,
         params.remarks || ''
       );
