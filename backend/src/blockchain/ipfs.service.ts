@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as https from 'https';
-import * as http from 'http';
+import FormData from 'form-data';
 
 export interface IpfsUploadResult {
   cid: string;
@@ -31,7 +31,13 @@ export class IpfsService {
     }
 
     try {
-      const formData = this.buildFormData(buffer, filename);
+      const formData = new FormData();
+      formData.append('file', buffer, {
+        filename,
+        contentType: 'application/pdf'
+      });
+
+      this.logger.log(`Uploading ${filename} to IPFS via Pinata...`);
 
       const response = await this.makeRequest(formData);
       
@@ -55,32 +61,15 @@ export class IpfsService {
     }
   }
 
-  private buildFormData(buffer: Buffer, filename: string): string {
-    const boundary = '----FormBoundary' + Math.random().toString(36).substring(2);
-    
-    const parts = [];
-    
-    parts.push(`--${boundary}\r\n`);
-    parts.push(`Content-Disposition: form-data; name="file"; filename="${filename}"\r\n`);
-    parts.push('Content-Type: application/pdf\r\n\r\n');
-    parts.push(buffer.toString('binary'));
-    parts.push(`\r\n--${boundary}--\r\n`);
-
-    return parts.join('');
-  }
-
-  private makeRequest(body: string): Promise<string> {
+  private makeRequest(formData: FormData): Promise<string> {
     return new Promise((resolve, reject) => {
-      const url = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
-      const parsedUrl = new URL(url);
-      
       const options = {
-        hostname: parsedUrl.hostname,
+        hostname: 'api.pinata.cloud',
         port: 443,
-        path: parsedUrl.pathname,
+        path: '/pinning/pinFileToIPFS',
         method: 'POST',
         headers: {
-          'Content-Type': 'multipart/form-data; boundary=----FormBoundary' + Math.random().toString(36).substring(2),
+          ...formData.getHeaders(),
           'pinata_api_key': this.apiKey,
           'pinata_secret_api_key': this.apiSecret,
         }
@@ -104,8 +93,7 @@ export class IpfsService {
 
       req.on('error', reject);
       
-      req.write(body);
-      req.end();
+      formData.pipe(req);
     });
   }
 
