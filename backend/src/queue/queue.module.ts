@@ -10,12 +10,25 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get('REDIS_HOST') || 'localhost',
-          port: parseInt(configService.get('REDIS_PORT') || '6379'),
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisUrl = configService.get('REDIS_URL');
+        
+        if (redisUrl) {
+          return {
+            connection: {
+              url: redisUrl,
+            },
+          };
+        }
+        
+        return {
+          connection: {
+            host: configService.get('REDIS_HOST') || 'localhost',
+            port: parseInt(configService.get('REDIS_PORT') || '6379'),
+            password: configService.get('REDIS_PASSWORD') || undefined,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     BullModule.registerQueue({
