@@ -172,7 +172,8 @@ export class BlockchainService {
 
     if (issueEvent) {
       const parsed = this.contract.interface.parseLog(issueEvent);
-      return parsed.args.tokenId.toNumber();
+      const tokenId = parsed.args.tokenId;
+      return typeof tokenId === 'bigint' ? Number(tokenId) : tokenId.toNumber();
     }
 
     throw new Error('Could not extract tokenId from transaction receipt');
