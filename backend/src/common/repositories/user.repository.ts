@@ -12,15 +12,15 @@ export class UserRepository {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.repo.find({ relations: ['school'] });
+    return this.repo.find();
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.repo.findOne({ where: { username }, relations: ['school'] });
+    return this.repo.findOne({ where: { username } });
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.repo.findOne({ where: { id }, relations: ['school'] });
+    return this.repo.findOne({ where: { id } });
   }
 
   async create(data: Partial<User>): Promise<User> {
@@ -31,20 +31,6 @@ export class UserRepository {
   async update(id: string, data: Partial<User>): Promise<User | null> {
     await this.repo.update(id, data);
     return this.findById(id);
-  }
-
-  async findByWalletAddress(walletAddress: string): Promise<User | null> {
-    return this.repo.findOne({ where: { schoolId: walletAddress } });
-  }
-
-  async findAdmins(): Promise<User[]> {
-    return this.repo.find({
-      where: [
-        { role: UserRole.SUPER_ADMIN },
-        { role: UserRole.SCHOOL_ADMIN },
-      ],
-      relations: ['school'],
-    });
   }
 
   async seedDefaultAdmin(): Promise<void> {

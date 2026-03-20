@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { School } from './school.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export enum UserRole {
   SUPER_ADMIN = 'super_admin',
@@ -25,13 +24,6 @@ export class User {
     default: UserRole.VIEWER,
   })
   role: UserRole;
-
-  @Column({ nullable: true })
-  schoolId: string;
-
-  @ManyToOne(() => School, { nullable: true })
-  @JoinColumn({ name: 'schoolId' })
-  school: School;
 
   @CreateDateColumn()
   createdAt: Date;
