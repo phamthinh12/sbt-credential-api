@@ -42,9 +42,9 @@ export class QueueController {
         processedOn: relevantJob.processedOn,
         finishedOn: relevantJob.finishedOn,
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
-        error: error.message,
+        error: error?.message || 'Unknown error',
         credentialId,
         status: 'error'
       };
@@ -68,9 +68,9 @@ export class QueueController {
           failedAt: job.failedReason ? new Date() : null,
         }))
       };
-    } catch (error) {
+    } catch (error: any) {
       return {
-        error: error.message,
+        error: error?.message || 'Unknown error',
         count: 0,
         jobs: []
       };

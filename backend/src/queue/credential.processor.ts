@@ -78,8 +78,8 @@ export class CredentialProcessor extends WorkerHost {
         txHash: result.txHash,
         tokenId: result.tokenId,
       };
-    } catch (error) {
-      this.logger.error(`Failed to mint credential ${credentialId}: ${error.message}`);
+    } catch (error: any) {
+      this.logger.error(`Failed to mint credential ${credentialId}: ${error?.message || 'Unknown error'}`);
       
       // Update status to indicate failure
       this.mockDb.updateCredential(credentialId, { 
