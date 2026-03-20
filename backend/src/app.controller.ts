@@ -1,16 +1,22 @@
 import { Controller, Get } from '@nestjs/common';
-import { MockDatabaseService } from './common/services/mock-database.service';
+import { UserRepository } from './common/repositories/user.repository';
+import { StudentRepository } from './common/repositories/student.repository';
+import { CredentialRepository } from './common/repositories/credential.repository';
 
 @Controller()
 export class AppController {
-  constructor(private readonly mockDb: MockDatabaseService) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly studentRepository: StudentRepository,
+    private readonly credentialRepository: CredentialRepository,
+  ) {}
 
   @Get()
-  getAllData() {
+  async getAllData() {
     return {
-      users: this.mockDb.findAllUsers(),
-      students: this.mockDb.findAllStudents(),
-      credentials: this.mockDb.findAllCredentials(),
+      users: await this.userRepository.findAll(),
+      students: await this.studentRepository.findAll(),
+      credentials: await this.credentialRepository.findAll(),
     };
   }
 }

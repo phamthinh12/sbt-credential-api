@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SimpleQueueService } from './simple-queue.service';
 import { BlockchainModule } from '../blockchain/blockchain.module';
-import { MockDatabaseModule } from '../common/mock-database.module';
+import { DatabaseModule } from '../common/database.module';
 
 @Module({
-  imports: [BlockchainModule, MockDatabaseModule],
+  imports: [BlockchainModule, DatabaseModule],
   providers: [SimpleQueueService],
   exports: [SimpleQueueService],
 })

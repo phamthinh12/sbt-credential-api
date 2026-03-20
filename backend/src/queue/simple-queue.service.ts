@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
-import { MockDatabaseService } from '../common/services/mock-database.service';
+import { CredentialRepository } from '../common/repositories/credential.repository';
+import { CredentialStatus } from '../common/entities/credential.entity';
 
 interface QueuedMintJob {
   credentialId: string;
@@ -19,7 +20,7 @@ export class SimpleQueueService implements OnModuleInit {
 
   constructor(
     private blockchainService: BlockchainService,
-    private mockDb: MockDatabaseService,
+    private credentialRepository: CredentialRepository,
   ) {}
 
   onModuleInit() {
@@ -54,12 +55,12 @@ export class SimpleQueueService implements OnModuleInit {
     try {
       this.logger.log(`Processing job: ${job.credentialId}, attempt: ${job.attempts + 1}`);
       
-      this.mockDb.updateCredential(job.credentialId, { status: 'issued' as any });
+      await this.credentialRepository.update(job.credentialId, { status: CredentialStatus.ISSUED });
 
       const result = await this.blockchainService.issueDiploma(job.data);
 
-      this.mockDb.updateCredential(job.credentialId, {
-        status: 'confirmed' as any,
+      await this.credentialRepository.update(job.credentialId, {
+        status: CredentialStatus.CONFIRMED,
         txHash: result.txHash,
         tokenId: String(result.tokenId),
         issuedAt: new Date(),
@@ -72,7 +73,7 @@ export class SimpleQueueService implements OnModuleInit {
       this.logger.error(`Job failed: ${job.credentialId}, attempt: ${job.attempts}, error: ${error.message}`);
 
       if (job.attempts >= job.maxAttempts) {
-        this.mockDb.updateCredential(job.credentialId, { status: 'pending' as any });
+        await this.credentialRepository.update(job.credentialId, { status: CredentialStatus.PENDING });
         this.queue.shift();
         this.logger.error(`Job max attempts reached, removing: ${job.credentialId}`);
       }

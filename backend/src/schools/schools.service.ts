@@ -1,19 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MockDatabaseService } from '../common/services/mock-database.service';
+import { SchoolRepository } from '../common/repositories/school.repository';
 
 @Injectable()
 export class SchoolsService {
-    constructor(private mockDb: MockDatabaseService) { }
+    constructor(private schoolRepository: SchoolRepository) { }
 
-    // API #13: Lấy danh sách tất cả trường
-    findAll() {
-        const schools = this.mockDb.findAllSchools();
-        return { data: schools }; // Bọc trong "data" theo chuẩn team Frontend
+    async findAll() {
+        const schools = await this.schoolRepository.findAll();
+        return { data: schools };
     }
 
-    // API #14: Xem chi tiết một trường
-    findOne(id: string) {
-        const school = this.mockDb.findSchoolById(id);
+    async findOne(id: string) {
+        const school = await this.schoolRepository.findById(id);
         if (!school) {
             throw new NotFoundException(`Không tìm thấy trường với id: ${id}`);
         }

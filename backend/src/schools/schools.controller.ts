@@ -1,23 +1,21 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { MockDatabaseService } from '../common/services/mock-database.service';
+import { SchoolsService } from './schools.service';
 
 @ApiTags('schools')
 @Controller('schools')
 export class SchoolsController {
-    constructor(private mockDb: MockDatabaseService) { }
+    constructor(private schoolsService: SchoolsService) { }
 
-    @Get() // Đảm bảo decorator này nằm NGAY TRÊN hàm findAll 
+    @Get()
     @ApiOperation({ summary: 'Lấy danh sách tất cả trường (API #13)' })
     findAll() {
-        return { data: this.mockDb.findAllSchools() };
+        return this.schoolsService.findAll();
     }
 
-    @Get(':id') // Không được có code xen giữa decorator và hàm 
+    @Get(':id')
     @ApiOperation({ summary: 'Xem chi tiết một trường (API #14)' })
-    findOne(@Param('id') id: string) {
-        const school = this.mockDb.findSchoolById(id);
-        if (!school) throw new NotFoundException('Không tìm thấy trường học');
-        return school;
+    async findOne(@Param('id') id: string) {
+        return this.schoolsService.findOne(id);
     }
 }

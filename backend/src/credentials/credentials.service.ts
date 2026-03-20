@@ -1,8 +1,10 @@
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
-import { MockDatabaseService } from '../common/services/mock-database.service';
+import { CredentialRepository } from '../common/repositories/credential.repository';
+import { StudentRepository } from '../common/repositories/student.repository';
 import { IpfsService } from '../blockchain/ipfs.service';
 import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
 import { SimpleQueueService } from '../queue/simple-queue.service';
+import { CredentialStatus } from '../common/entities/credential.entity';
 import * as crypto from 'crypto';
 
 interface User {
@@ -13,63 +15,56 @@ interface User {
   schoolId?: string;
 }
 
-interface CreateCredentialData {
-  studentId: string;
-  name: string;
-  description?: string;
-  classification?: string;
-  major?: string;
-  issuerName?: string;
-  expiryDate?: string;
-  schoolId?: string;
-}
-
 @Injectable()
 export class CredentialsService {
   constructor(
-    private mockDb: MockDatabaseService,
+    private credentialRepository: CredentialRepository,
+    private studentRepository: StudentRepository,
     private ipfsService: IpfsService,
     private blockchainService: BlockchainService,
     private simpleQueueService: SimpleQueueService,
   ) { }
 
   async findAll(user?: User): Promise<any> {
-    let credentials = this.mockDb.findAllCredentials();
+    let credentials = await this.credentialRepository.findAll();
     const now = new Date();
     
-    credentials = credentials.map(cred => {
+    credentials = await Promise.all(credentials.map(async (cred: any) => {
       if (cred.expiryDate && new Date(cred.expiryDate) < now && cred.status === 'confirmed') {
-        this.mockDb.updateCredential(cred.id, { status: 'expired' as any });
+        await this.credentialRepository.update(cred.id, { status: CredentialStatus.EXPIRED });
         return { ...cred, status: 'expired' };
       }
       return cred;
-    });
+    }));
 
     if (user?.role === 'school_admin') {
-      credentials = credentials.filter(c => c.schoolId === user.schoolId);
+      credentials = credentials.filter((c: any) => c.schoolId === user.schoolId);
     }
 
     return { data: credentials };
   }
 
   async findOne(id: string): Promise<any> {
-    return this.mockDb.findCredentialById(id);
+    const credential = await this.credentialRepository.findById(id);
+    if (!credential) {
+      throw new NotFoundException('Không tìm thấy văn bằng');
+    }
+    return credential;
   }
 
   async findByStudentId(studentId: string, user?: User): Promise<any[]> {
-    // Student can only view their own credentials
     if (user?.role === 'student' && user.sub !== studentId) {
       throw new ForbiddenException('Bạn chỉ có thể xem văn bằng của mình');
     }
-    return this.mockDb.findCredentialsByStudentId(studentId);
+    return this.credentialRepository.findByStudentId(studentId);
   }
 
   async findBySchoolId(schoolId: string, user?: User): Promise<any> {
     if (user?.role === 'school_admin' && user.schoolId !== schoolId) {
       throw new ForbiddenException('Bạn chỉ có thể xem văn bằng của trường mình');
     }
-    const all = this.mockDb.findAllCredentials();
-    return { data: all.filter(c => c.schoolId === schoolId) };
+    const credentials = await this.credentialRepository.findBySchoolId(schoolId);
+    return { data: credentials };
   }
 
   async createWithFile(file: any, body: any, user: User): Promise<any> {
@@ -104,9 +99,11 @@ export class CredentialsService {
     }
 
     const graduationYear = body.expiryDate ? new Date(body.expiryDate).getFullYear() : new Date().getFullYear();
+    const verifyCode = await this.credentialRepository.generateVerifyCode();
 
-    const credentialData = {
+    const credentialData: any = {
       studentId: body.studentId,
+      schoolId: user.schoolId,
       name: body.name,
       description: body.description || '',
       classification: body.classification || '',
@@ -116,12 +113,13 @@ export class CredentialsService {
       ipfsHash: ipfsHash,
       ipfsUrl: ipfsResult?.url || null,
       expiryDate: body.expiryDate || null,
-      schoolId: user.schoolId,
+      verifyCode,
+      status: CredentialStatus.PENDING,
     };
 
-    const credential = this.mockDb.createCredential(credentialData);
+    const credential = await this.credentialRepository.create(credentialData);
 
-    const student = this.mockDb.findStudentById(body.studentId);
+    const student = await this.studentRepository.findById(body.studentId);
 
     const mintParams: MintDiplomaParams = {
       recipient: student?.walletAddress || '',
@@ -150,13 +148,8 @@ export class CredentialsService {
     };
   }
 
-  private generateDocumentHash(data: CreateCredentialData): string {
-    const content = `${data.studentId}-${data.name}-${Date.now()}`;
-    return crypto.createHash('sha256').update(content).digest('hex');
-  }
-
   async revoke(id: string, user?: User): Promise<any> {
-    const credential = this.mockDb.findCredentialById(id);
+    const credential = await this.credentialRepository.findById(id);
     if (!credential) {
       throw new NotFoundException('Không tìm thấy văn bằng');
     }
@@ -170,8 +163,8 @@ export class CredentialsService {
     }
 
     const now = new Date();
-    this.mockDb.updateCredential(id, { 
-      status: 'revoked' as any,
+    await this.credentialRepository.update(id, { 
+      status: CredentialStatus.REVOKED,
       updatedAt: now 
     });
 
@@ -184,7 +177,7 @@ export class CredentialsService {
   }
 
   async findByVerifyCode(code: string): Promise<any> {
-    const credential = this.mockDb.findCredentialByVerifyCode(code);
+    const credential = await this.credentialRepository.findByVerifyCode(code);
 
     if (!credential) {
       throw new NotFoundException('Mã xác minh không tồn tại');

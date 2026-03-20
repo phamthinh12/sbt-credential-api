@@ -3,11 +3,13 @@ import { CredentialsController } from './credentials.controller';
 import { CredentialsService } from './credentials.service';
 import { AuthModule } from '../auth/auth.module';
 import { SimpleQueueModule } from '../queue/simple-queue.module';
+import { DatabaseModule } from '../common/database.module';
 
 @Module({
   imports: [
     AuthModule,
     SimpleQueueModule,
+    DatabaseModule,
   ],
   controllers: [CredentialsController],
   providers: [CredentialsService],
