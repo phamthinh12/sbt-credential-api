@@ -11,7 +11,7 @@ export class SchoolRepository {
   ) {}
 
   async findAll(): Promise<School[]> {
-    return this.repo.find({ relations: ['students', 'credentials'] });
+    return this.repo.find();
   }
 
   async findById(id: string): Promise<School | null> {
