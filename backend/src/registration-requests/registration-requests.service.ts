@@ -127,6 +127,12 @@ export class RegistrationRequestsService {
         isActive: true,
       });
       result.school = school;
+      
+      // Cập nhật schoolId vào registration request
+      await this.registrationRequestRepository.update(id, {
+        schoolId: school.id,
+        approvedAt: new Date(),
+      });
     }
 
     return {
