@@ -11,23 +11,23 @@ export class CredentialRepository {
   ) {}
 
   async findAll(): Promise<Credential[]> {
-    return this.repo.find({ relations: ['student'] });
+    return this.repo.find({ relations: ['student', 'school'] });
   }
 
   async findById(id: string): Promise<Credential | null> {
-    return this.repo.findOne({ where: { id }, relations: ['student'] });
+    return this.repo.findOne({ where: { id }, relations: ['student', 'school'] });
   }
 
   async findByVerifyCode(code: string): Promise<Credential | null> {
-    return this.repo.findOne({ where: { verifyCode: code }, relations: ['student'] });
+    return this.repo.findOne({ where: { verifyCode: code }, relations: ['student', 'school'] });
   }
 
   async findByStudentId(studentId: string): Promise<Credential[]> {
-    return this.repo.find({ where: { studentId }, relations: ['student'] });
+    return this.repo.find({ where: { studentId }, relations: ['student', 'school'] });
   }
 
   async findBySchoolId(schoolId: string): Promise<Credential[]> {
-    return this.repo.find({ where: { schoolId }, relations: ['student'] });
+    return this.repo.find({ where: { schoolId }, relations: ['student', 'school'] });
   }
 
   async create(data: Partial<Credential>): Promise<Credential> {

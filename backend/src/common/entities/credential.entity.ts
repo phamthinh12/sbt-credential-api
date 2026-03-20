@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Student } from './student.entity';
+import { School } from './school.entity';
 
 export enum CredentialStatus {
   PENDING = 'pending',
@@ -23,6 +24,10 @@ export class Credential {
 
   @Column()
   schoolId: string;
+
+  @ManyToOne(() => School, { nullable: true })
+  @JoinColumn({ name: 'schoolId' })
+  school: School;
 
   @Column()
   name: string;
