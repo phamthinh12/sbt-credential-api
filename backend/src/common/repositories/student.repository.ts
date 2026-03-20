@@ -47,16 +47,17 @@ export class StudentRepository {
 
   async seedDefaultStudent(): Promise<void> {
     const existing = await this.findByWalletAddress('0xcd3B766CCDd6AE721141F452C550Ca635964ce71');
-    if (!existing) {
-      const school = await this.findById('school-001') || { id: 'school-001' };
-      await this.create({
-        name: 'Nguyễn Văn A',
-        email: 'a.nguyenvan@example.com',
-        walletAddress: '0xcd3B766CCDd6AE721141F452C550Ca635964ce71',
-        studentCode: 'SV001',
-        status: StudentStatus.ACTIVE,
-        schoolId: school.id,
-      });
+    if (existing) {
+      return;
     }
+    
+    await this.create({
+      name: 'Nguyễn Văn A',
+      email: 'a.nguyenvan@example.com',
+      walletAddress: '0xcd3B766CCDd6AE721141F452C550Ca635964ce71',
+      studentCode: 'SV001',
+      status: StudentStatus.ACTIVE,
+      schoolId: '',
+    });
   }
 }
