@@ -5,7 +5,7 @@ import { StudentsModule } from './students/students.module';
 import { CredentialsModule } from './credentials/credentials.module';
 import { EventsModule } from './events/events.module';
 import { AppController } from './app.controller';
-import { MockDatabaseModule } from './common/mock-database.module';
+import { DatabaseModule } from './common/database.module';
 import { SchoolsModule } from './schools/schools.module';
 import { RegistrationRequestsModule } from './registration-requests/registration-requests.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
@@ -17,7 +17,7 @@ import { IpfsModule } from './blockchain/ipfs.module';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    MockDatabaseModule,
+    DatabaseModule,
     BlockchainModule,
     IpfsModule,
     AuthModule,
