@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Put, Delete, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { StudentsService } from './students.service';
-import { CreateStudentDto } from './dto/create-student.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -26,15 +25,6 @@ export class StudentsController {
   @ApiOperation({ summary: 'Xem chi tiết sinh viên (API #10)' })
   findOne(@Param('id') id: string) {
     return this.studentsService.findOne(id);
-  }
-
-  @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Tạo sinh viên mới - School/Admin' })
-  create(@Request() req: any, @Body() createStudentDto: CreateStudentDto) {
-    const user = req.user;
-    return this.studentsService.create(createStudentDto, user);
   }
 
   @Put(':id')

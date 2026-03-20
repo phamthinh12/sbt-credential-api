@@ -45,14 +45,6 @@ export class StudentsService {
     return { data: student };
   }
 
-  async create(data: any, user: User): Promise<{ data: any }> {
-    if (user.role === 'school_admin' && user.schoolId) {
-      data.schoolId = user.schoolId;
-    }
-    const student = await this.studentRepository.create(data);
-    return { data: student };
-  }
-
   async update(id: string, data: any, user: User): Promise<{ data: any }> {
     const student = await this.studentRepository.findById(id);
     if (!student) {
