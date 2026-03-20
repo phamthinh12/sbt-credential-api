@@ -9,7 +9,6 @@ import * as crypto from 'crypto';
 
 interface User {
   userId: string;
-  sub?: string;
   username: string;
   role: string;
   schoolId?: string;
