@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../common/repositories/user.repository';
 import { StudentRepository } from '../common/repositories/student.repository';
 import { SchoolRepository } from '../common/repositories/school.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,8 @@ export class AuthService {
     const user = await this.userRepository.findByUsername(username);
     if (!user) return null;
     
-    if (password === 'admin123') {
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (isValid) {
       return { id: user.id, username: user.username, role: user.role, schoolId: user.schoolId };
     }
     return null;
