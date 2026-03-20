@@ -57,17 +57,4 @@ export class UserRepository {
       });
     }
   }
-
-  async seedDefaultSchoolAdmin(schoolId: string): Promise<void> {
-    const existing = await this.findByUsername('school_admin');
-    if (!existing) {
-      const passwordHash = await bcrypt.hash('school123', 10);
-      await this.create({
-        username: 'school_admin',
-        passwordHash,
-        role: UserRole.SCHOOL_ADMIN,
-        schoolId,
-      });
-    }
-  }
 }
