@@ -6,7 +6,7 @@ headers:
   Authorization: ""
 body:
   type: json
-  content: "{\"walletAddress\": \"0xcd3B766CCDd6AE721141F452C550Ca635964ce71\",\r
+  content: "{\"walletAddress\": \"0x32933574A31780A80D5F646C3E89e26e407C5Ae7\",\r
 
     \  \"type\": \"student\",\r
 
@@ -16,7 +16,7 @@ body:
 
     \  \"studentCode\": \"TEST001\",\r
 
-    \  \"schoolId\": \"school-002\"}"
+    \  \"schoolId\": \"9fa9492b-a0dc-4ca7-824b-e82d5bd2b1d5\"}"
 auth:
   type: noauth
 order: 1773225003961

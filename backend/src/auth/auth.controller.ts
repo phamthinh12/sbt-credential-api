@@ -19,10 +19,4 @@ export class AuthController {
   async loginWithWallet(@Body() body: { walletAddress: string }) {
     return this.authService.loginWithWallet(body.walletAddress);
   }
-
-  @Get('wallet/:address')
-  @ApiOperation({ summary: 'Kiểm tra wallet đã đăng ký chưa (API #2)' })
-  async checkWallet(@Param('address') address: string) {
-    return this.authService.checkWallet(address);
-  }
 }

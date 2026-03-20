@@ -45,20 +45,6 @@ export class AuthService {
     };
   }
 
-  async checkWallet(walletAddress: string) {
-    const student = await this.studentRepository.findByWalletAddress(walletAddress);
-    if (student) {
-      return { exists: true, role: 'student', studentId: student.id, name: student.name };
-    }
-
-    const school = await this.schoolRepository.findByWalletAddress(walletAddress);
-    if (school) {
-      return { exists: true, role: 'school', schoolId: school.id, name: school.name };
-    }
-
-    return { exists: false, message: 'Wallet chưa đăng ký' };
-  }
-
   async loginWithWallet(walletAddress: string) {
     const student = await this.studentRepository.findByWalletAddress(walletAddress);
     if (student) {

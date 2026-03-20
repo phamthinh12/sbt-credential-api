@@ -3,5 +3,5 @@ name: Get School By Id
 url: "{{baseUrl}}/schools/:id"
 method: GET
 pathVariables:
-  id: school-001
+  id: 91632af4-b54a-465b-968c-61d4b98bb583
 order: 2604747214141016

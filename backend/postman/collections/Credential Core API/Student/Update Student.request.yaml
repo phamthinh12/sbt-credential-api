@@ -1,6 +1,6 @@
 $kind: http-request
 name: Update Student
-url: "{{baseUrl}}/students/student-001"
+url: "{{baseUrl}}/students/9d3b0a40-f248-4c46-8eea-e6d5e91381dc"
 method: PUT
 body:
   type: json
