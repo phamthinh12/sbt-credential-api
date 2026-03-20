@@ -15,7 +15,6 @@ import {
   CredentialRepository,
   RegistrationRequestRepository,
 } from './repositories';
-import { SeedService } from './seed.service';
 
 @Module({
   imports: [
@@ -52,7 +51,6 @@ import { SeedService } from './seed.service';
     StudentRepository,
     CredentialRepository,
     RegistrationRequestRepository,
-    SeedService,
   ],
   exports: [
     UserRepository,
