@@ -120,6 +120,11 @@ export class RegistrationRequestsService {
         status: StudentStatus.ACTIVE,
       });
       result.student = student;
+      
+      // Cập nhật approvedAt cho student
+      await this.registrationRequestRepository.update(id, {
+        approvedAt: new Date(),
+      });
     } else if (request.type === 'school') {
       const school = await this.schoolRepository.create({
         name: request.schoolName || request.name || 'Trường mới',
