@@ -15,17 +15,17 @@ export class Credential {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'uuid' })
   studentId: string;
 
-  @ManyToOne(() => Student, { nullable: true })
+  @ManyToOne(() => Student, (student) => student.credentials, { nullable: true })
   @JoinColumn({ name: 'studentId' })
   student: Student;
 
-  @Column()
+  @Column({ type: 'uuid' })
   schoolId: string;
 
-  @ManyToOne(() => School, { nullable: true })
+  @ManyToOne(() => School, (school) => school.credentials, { nullable: true })
   @JoinColumn({ name: 'schoolId' })
   school: School;
 

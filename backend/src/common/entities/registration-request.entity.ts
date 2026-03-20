@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { School } from './school.entity';
 
 export enum RegistrationRequestType {
   SCHOOL = 'school',
@@ -49,6 +50,10 @@ export class RegistrationRequest {
 
   @Column({ nullable: true })
   schoolId: string;
+
+  @ManyToOne(() => School, { nullable: true })
+  @JoinColumn({ name: 'schoolId' })
+  school: School;
 
   @Column({ nullable: true })
   approvedAt: Date;

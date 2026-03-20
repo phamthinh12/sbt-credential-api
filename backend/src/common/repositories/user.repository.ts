@@ -12,15 +12,15 @@ export class UserRepository {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.repo.find();
+    return this.repo.find({ relations: ['school'] });
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.repo.findOne({ where: { username } });
+    return this.repo.findOne({ where: { username }, relations: ['school'] });
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['school'] });
   }
 
   async create(data: Partial<User>): Promise<User> {
@@ -43,6 +43,7 @@ export class UserRepository {
         { role: UserRole.SUPER_ADMIN },
         { role: UserRole.SCHOOL_ADMIN },
       ],
+      relations: ['school'],
     });
   }
 

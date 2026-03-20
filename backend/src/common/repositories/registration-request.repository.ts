@@ -11,19 +11,19 @@ export class RegistrationRequestRepository {
   ) {}
 
   async findAll(): Promise<RegistrationRequest[]> {
-    return this.repo.find();
+    return this.repo.find({ relations: ['school'] });
   }
 
   async findById(id: string): Promise<RegistrationRequest | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['school'] });
   }
 
   async findByWalletAddress(walletAddress: string): Promise<RegistrationRequest | null> {
-    return this.repo.findOne({ where: { walletAddress } });
+    return this.repo.findOne({ where: { walletAddress }, relations: ['school'] });
   }
 
   async findByStatus(status: RegistrationRequestStatus): Promise<RegistrationRequest[]> {
-    return this.repo.find({ where: { status } });
+    return this.repo.find({ where: { status }, relations: ['school'] });
   }
 
   async create(data: Partial<RegistrationRequest>): Promise<RegistrationRequest> {

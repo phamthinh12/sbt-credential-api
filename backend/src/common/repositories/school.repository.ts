@@ -11,15 +11,15 @@ export class SchoolRepository {
   ) {}
 
   async findAll(): Promise<School[]> {
-    return this.repo.find();
+    return this.repo.find({ relations: ['students', 'credentials', 'users'] });
   }
 
   async findById(id: string): Promise<School | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['students', 'credentials', 'users'] });
   }
 
   async findByWalletAddress(walletAddress: string): Promise<School | null> {
-    return this.repo.findOne({ where: { walletAddress } });
+    return this.repo.findOne({ where: { walletAddress }, relations: ['students', 'credentials', 'users'] });
   }
 
   async create(data: Partial<School>): Promise<School> {

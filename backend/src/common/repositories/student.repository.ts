@@ -11,23 +11,23 @@ export class StudentRepository {
   ) {}
 
   async findAll(): Promise<Student[]> {
-    return this.repo.find();
+    return this.repo.find({ relations: ['school', 'credentials'] });
   }
 
   async findById(id: string): Promise<Student | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['school', 'credentials'] });
   }
 
   async findByEmail(email: string): Promise<Student | null> {
-    return this.repo.findOne({ where: { email } });
+    return this.repo.findOne({ where: { email }, relations: ['school'] });
   }
 
   async findByWalletAddress(walletAddress: string): Promise<Student | null> {
-    return this.repo.findOne({ where: { walletAddress } });
+    return this.repo.findOne({ where: { walletAddress }, relations: ['school'] });
   }
 
   async findBySchoolId(schoolId: string): Promise<Student[]> {
-    return this.repo.find({ where: { schoolId } });
+    return this.repo.find({ where: { schoolId }, relations: ['school'] });
   }
 
   async create(data: Partial<Student>): Promise<Student> {
@@ -51,13 +51,18 @@ export class StudentRepository {
       return;
     }
     
+    const schools = await this.repo.manager.findOne(this.repo.manager.getRepository('School').target, {});
+    if (!schools) {
+      return;
+    }
+    
     await this.create({
       name: 'Nguyễn Văn A',
       email: 'a.nguyenvan@example.com',
       walletAddress: '0xcd3B766CCDd6AE721141F452C550Ca635964ce71',
       studentCode: 'SV001',
       status: StudentStatus.ACTIVE,
-      schoolId: '',
+      schoolId: schools.id,
     });
   }
 }

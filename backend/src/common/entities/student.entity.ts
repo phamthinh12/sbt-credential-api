@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import { School } from './school.entity';
+import { Credential } from './credential.entity';
 
 export enum StudentStatus {
   ACTIVE = 'active',
@@ -11,8 +13,12 @@ export class Student {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'uuid' })
   schoolId: string;
+
+  @ManyToOne(() => School, { nullable: true })
+  @JoinColumn({ name: 'schoolId' })
+  school: School;
 
   @Column({ nullable: true })
   userId: string;
@@ -35,6 +41,9 @@ export class Student {
     default: StudentStatus.ACTIVE,
   })
   status: StudentStatus;
+
+  @OneToMany(() => Credential, (credential) => credential.student)
+  credentials: Credential[];
 
   @CreateDateColumn()
   createdAt: Date;
