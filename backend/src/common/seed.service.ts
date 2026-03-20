@@ -26,6 +26,10 @@ export class SeedService implements OnModuleInit {
   private async seedDefaultData() {
     await this.userRepository.seedDefaultAdmin();
     await this.schoolRepository.seedDefaultSchool();
+    const school = await this.schoolRepository.findByWalletAddress('0xA30EEbA7AD3712fDf080b0C2aadB5906B05347E7');
+    if (school) {
+      await this.userRepository.seedDefaultSchoolAdmin(school.id);
+    }
     await this.studentRepository.seedDefaultStudent();
   }
 }
