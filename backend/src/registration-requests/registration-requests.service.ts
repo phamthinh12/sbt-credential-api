@@ -21,6 +21,20 @@ export class RegistrationRequestsService {
     private readonly schoolRepository: SchoolRepository,
   ) {}
 
+  private formatRequestResponse(request: any) {
+    return {
+      ...request,
+      schoolInfo: request.school || {
+        name: request.schoolName,
+        walletAddress: request.walletAddress,
+      },
+    };
+  }
+
+  private formatRequestsList(requests: any[]) {
+    return requests.map(req => this.formatRequestResponse(req));
+  }
+
   async create(createDto: CreateRegistrationDto) {
     const existingRequest = await this.registrationRequestRepository.findByWalletAddress(
       createDto.walletAddress,
@@ -43,7 +57,7 @@ export class RegistrationRequestsService {
     });
 
     return {
-      data: request,
+      data: this.formatRequestResponse(request),
       message: 'Yêu cầu đăng ký đã được gửi. Vui lòng chờ duyệt.',
     };
   }
@@ -72,7 +86,7 @@ export class RegistrationRequestsService {
       requests = requests.filter(r => r.schoolId === schoolId);
     }
     
-    return { data: requests };
+    return { data: this.formatRequestsList(requests) };
   }
 
   async findOne(id: string) {
@@ -80,7 +94,7 @@ export class RegistrationRequestsService {
     if (!request) {
       throw new NotFoundException('Không tìm thấy yêu cầu đăng ký');
     }
-    return { data: request };
+    return { data: this.formatRequestResponse(request) };
   }
 
   async approve(id: string, user?: User) {
@@ -121,7 +135,6 @@ export class RegistrationRequestsService {
       });
       result.student = student;
       
-      // Cập nhật approvedAt cho student
       await this.registrationRequestRepository.update(id, {
         approvedAt: new Date(),
       });
@@ -133,16 +146,16 @@ export class RegistrationRequestsService {
       });
       result.school = school;
       
-      // Cập nhật schoolId vào registration request
       await this.registrationRequestRepository.update(id, {
         schoolId: school.id,
         approvedAt: new Date(),
       });
     }
 
+    const updatedRequest = await this.registrationRequestRepository.findById(id);
     return {
       ...result,
-      data: await this.registrationRequestRepository.findById(id),
+      data: this.formatRequestResponse(updatedRequest),
     };
   }
 
@@ -174,7 +187,7 @@ export class RegistrationRequestsService {
     return {
       success: true,
       message: 'Đã từ chối yêu cầu',
-      data: await this.registrationRequestRepository.findById(id),
+      data: this.formatRequestResponse(request),
     };
   }
 }
