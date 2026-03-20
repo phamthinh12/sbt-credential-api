@@ -53,7 +53,7 @@ export class CredentialsService {
   }
 
   async findByStudentId(studentId: string, user?: User): Promise<any[]> {
-    if (user?.role === 'student' && user.sub !== studentId) {
+    if (user?.role === 'student' && user.userId !== studentId) {
       throw new ForbiddenException('Bạn chỉ có thể xem văn bằng của mình');
     }
     return this.credentialRepository.findByStudentId(studentId);
