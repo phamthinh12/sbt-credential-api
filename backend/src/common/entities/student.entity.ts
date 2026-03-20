@@ -20,9 +20,6 @@ export class Student {
   @JoinColumn({ name: 'schoolId' })
   school: School;
 
-  @Column({ nullable: true })
-  userId: string;
-
   @Column()
   name: string;
 
