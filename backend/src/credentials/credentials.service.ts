@@ -97,8 +97,7 @@ export class CredentialsService {
       console.error('IPFS upload failed:', error.message);
     }
 
-    const expiryDate = body.expiryDate ? new Date(body.expiryDate) : null;
-    const graduationYear = expiryDate && !isNaN(expiryDate.getTime()) ? expiryDate.getFullYear() : new Date().getFullYear();
+    const graduationYear = body.expiryDate ? new Date(body.expiryDate).getFullYear() : new Date().getFullYear();
     const verifyCode = await this.credentialRepository.generateVerifyCode();
 
     const credentialData: any = {
@@ -112,7 +111,7 @@ export class CredentialsService {
       fileHash: fileHash,
       ipfsHash: ipfsHash,
       ipfsUrl: ipfsResult?.url || null,
-      expiryDate: expiryDate && !isNaN(expiryDate.getTime()) ? expiryDate : null,
+      expiryDate: body.expiryDate || null,
       verifyCode,
       status: CredentialStatus.PENDING,
     };
