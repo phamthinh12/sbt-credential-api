@@ -19,7 +19,7 @@ export class IpfsService {
     this.apiKey = this.configService.get<string>('IPFS_API_KEY') || '';
     this.apiSecret = this.configService.get<string>('IPFS_API_SECRET') || '';
     this.gatewayUrl = 'https://gateway.pinata.cloud';
-    
+
     console.log('[IPFS] API Key loaded:', this.apiKey ? 'YES' : 'NO');
     console.log('[IPFS] API Secret loaded:', this.apiSecret ? 'YES' : 'NO');
   }
@@ -40,22 +40,22 @@ export class IpfsService {
       this.logger.log(`Uploading ${filename} to IPFS via Pinata...`);
 
       const response = await this.makeRequest(formData);
-      
+
       const result = JSON.parse(response);
-      
+
       if (!result.IpfsHash) {
         throw new Error('Upload failed - no CID returned');
       }
 
       const cid = result.IpfsHash;
-      
+
       this.logger.log(`File uploaded to IPFS: ${cid}`);
 
       return {
         cid,
         url: `${this.gatewayUrl}/ipfs/${cid}`
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Failed to upload to IPFS: ${error.message}`);
       throw error;
     }
@@ -77,11 +77,11 @@ export class IpfsService {
 
       const req = https.request(options, (res) => {
         let data = '';
-        
+
         res.on('data', (chunk) => {
           data += chunk;
         });
-        
+
         res.on('end', () => {
           if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
             resolve(data);
@@ -92,7 +92,7 @@ export class IpfsService {
       });
 
       req.on('error', reject);
-      
+
       formData.pipe(req);
     });
   }
