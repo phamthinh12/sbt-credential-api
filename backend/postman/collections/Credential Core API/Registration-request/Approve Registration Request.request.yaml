@@ -3,7 +3,7 @@ name: Approve Registration Request
 url: "{{baseUrl}}/registration-requests/:id/approve"
 method: PATCH
 pathVariables:
-  id: f7ae2110-6a5e-4879-bbf4-deff7162f1bb
+  id: 935d5633-63a9-46f2-8b0d-b0ba2bf94b63
 auth:
   type: bearer
   credentials:

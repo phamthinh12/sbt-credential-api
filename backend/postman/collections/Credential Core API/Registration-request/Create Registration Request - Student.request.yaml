@@ -6,17 +6,17 @@ headers:
   Authorization: ""
 body:
   type: json
-  content: "{\"walletAddress\": \"0x32933574A31780A80D5F646C3E89e26e407C5Ae7\",\r
+  content: "{\"walletAddress\": \"0xe287c7443171bd62336Fee6D0A56138C49d377Db\",\r
 
     \  \"type\": \"student\",\r
 
-    \  \"name\": \"Trần Thanh Test\",\r
+    \  \"name\": \"Nguyễn Đại Tài\",\r
 
-    \  \"email\": \"test@email.com\",\r
+    \  \"email\": \"daitai@email.com\",\r
 
-    \  \"studentCode\": \"TEST001\",\r
+    \  \"studentCode\": \"DH52201505\",\r
 
-    \  \"schoolId\": \"9fa9492b-a0dc-4ca7-824b-e82d5bd2b1d5\"}"
+    \  \"schoolId\": \"251be888-c8e8-498a-90ee-083fe32e1366\"}"
 auth:
   type: noauth
 order: 1773225003961

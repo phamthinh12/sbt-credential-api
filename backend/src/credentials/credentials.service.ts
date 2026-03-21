@@ -93,7 +93,7 @@ export class CredentialsService {
       } else {
         console.log('[Credential] IPFS not configured, skipping upload');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('IPFS upload failed:', error.message);
     }
 

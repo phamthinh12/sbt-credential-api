@@ -6,15 +6,15 @@ body:
   type: json
   content: "{\r
 
-    \  \"walletAddress\": \"0xcdc9C282D271abda4B73454b9E7ba9BDd911B109\",\r
+    \  \"walletAddress\": \"0x0644cDb8e0EB39b0c65Ca8610170980191b8d4e9\",\r
 
     \  \"type\": \"school\",\r
 
-    \  \"name\": \"stu\",\r
+    \  \"name\": \"FPT\",\r
 
-    \  \"email\": \"stu@edu.vn\",\r
+    \  \"email\": \"FPT@edu.vn\",\r
 
-    \  \"schoolName\": \"Đại học stu\"\r
+    \  \"schoolName\": \"Đại học FPT\"\r
 
     }"
 order: 221759339335032
