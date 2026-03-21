@@ -188,6 +188,18 @@ export class CredentialsService {
   async verifyFileIntegrity(code: string, fileBuffer: Buffer) {
     const credential = await this.findByVerifyCode(code);
 
+    if (credential.status === CredentialStatus.REVOKED) {
+      return {
+        isValid: false,
+        message: 'Văn bằng đã bị thu hồi',
+        status: 'revoked',
+        metadata: {
+          studentName: credential.student?.name,
+          credentialName: credential.name,
+        }
+      };
+    }
+
     const uploadedFileHash = crypto
       .createHash('sha256')
       .update(fileBuffer)
