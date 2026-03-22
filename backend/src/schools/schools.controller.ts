@@ -24,8 +24,8 @@ export class SchoolsController {
 
     @Put(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('super_admin')
-    @ApiOperation({ summary: 'Cập nhật trường (API #11) - Super Admin only' })
+    @Roles('super_admin', 'school_admin')
+    @ApiOperation({ summary: 'Cập nhật trường (API #11) - Super Admin hoặc School của trường đó' })
     update(@Param('id') id: string, @Body() data: { name?: string; email?: string }, @Request() req: any) {
         return this.schoolsService.update(id, data, req.user);
     }

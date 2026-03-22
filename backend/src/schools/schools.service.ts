@@ -32,17 +32,17 @@ export class SchoolsService {
     }
 
     async update(id: string, data: { name?: string; email?: string }, user: User) {
-        if (user.role !== 'super_admin') {
-            throw new ForbiddenException('Chỉ Super Admin mới có thể cập nhật trường');
-        }
-
         const school = await this.schoolRepository.findById(id);
         if (!school) {
             throw new NotFoundException('Không tìm thấy trường');
         }
 
-        const updated = await this.schoolRepository.update(id, data);
-        return { data: updated };
+        if (user.role === 'super_admin' || user.schoolId === id) {
+            const updated = await this.schoolRepository.update(id, data);
+            return { data: updated };
+        }
+
+        throw new ForbiddenException('Không có quyền cập nhật trường này');
     }
 
     async delete(id: string, user: User) {

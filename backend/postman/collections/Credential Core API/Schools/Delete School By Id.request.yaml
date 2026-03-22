@@ -1,0 +1,7 @@
+$kind: http-request
+name: Delete School By Id
+url: "{{baseUrl}}/schools/:id"
+method: DELETE
+pathVariables:
+  id: ""
+order: 3575702175174592

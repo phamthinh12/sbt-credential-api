@@ -1,0 +1,7 @@
+$kind: http-request
+name: Update School By Id
+url: "{{baseUrl}}/schools/:id"
+method: PUT
+pathVariables:
+  id: ""
+order: 4361194751889909

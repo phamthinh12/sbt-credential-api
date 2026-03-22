@@ -54,9 +54,14 @@ export class StudentsService {
     if (!student) {
       throw new NotFoundException('Không tìm thấy sinh viên');
     }
-    
-    if (user.role === 'school_admin' && user.schoolId !== student.schoolId) {
-      throw new ForbiddenException('Bạn chỉ có thể cập nhật sinh viên của trường mình');
+
+    const canUpdate = 
+      user.role === 'super_admin' ||
+      user.userId === id ||
+      (user.role === 'school_admin' && user.schoolId === student.schoolId);
+
+    if (!canUpdate) {
+      throw new ForbiddenException('Không có quyền cập nhật sinh viên này');
     }
     
     const updated = await this.studentRepository.update(id, data);
@@ -69,10 +74,8 @@ export class StudentsService {
       throw new NotFoundException('Không tìm thấy sinh viên');
     }
 
-    if (user.role === 'school_admin') {
-      if (user.schoolId !== student.schoolId) {
-        throw new ForbiddenException('Bạn chỉ có thể xóa sinh viên của trường mình');
-      }
+    if (user.role === 'school_admin' && user.schoolId !== student.schoolId) {
+      throw new ForbiddenException('Bạn chỉ có thể xóa sinh viên của trường mình');
     }
 
     await this.registrationRequestRepository.deleteByWalletAddress(student.walletAddress);

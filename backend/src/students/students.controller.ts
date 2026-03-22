@@ -29,8 +29,8 @@ export class StudentsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('school_admin')
-  @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #11) - School Admin' })
+  @Roles('super_admin', 'school_admin', 'student')
+  @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #12) - Super Admin, School, hoặc chính Student' })
   update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
     return this.studentsService.update(id, data, req.user);
   }
@@ -38,7 +38,7 @@ export class StudentsController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin')
-  @ApiOperation({ summary: 'Xóa sinh viên (API #13) - School Admin xóa sinh viên của trường mình' })
+  @ApiOperation({ summary: 'Xóa sinh viên (API #14) - School Admin xóa sinh viên của trường mình' })
   delete(@Param('id') id: string, @Request() req: any) {
     return this.studentsService.delete(id, req.user);
   }
