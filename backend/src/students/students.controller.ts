@@ -37,9 +37,9 @@ export class StudentsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin')
-  @ApiOperation({ summary: 'Xóa sinh viên (API #12) - Admin only' })
-  delete(@Param('id') id: string) {
-    return this.studentsService.delete(id);
+  @Roles('school_admin')
+  @ApiOperation({ summary: 'Xóa sinh viên (API #13) - School Admin xóa sinh viên của trường mình' })
+  delete(@Param('id') id: string, @Request() req: any) {
+    return this.studentsService.delete(id, req.user);
   }
 }

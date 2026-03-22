@@ -40,4 +40,9 @@ export class RegistrationRequestRepository {
     await this.repo.update(id, { status });
     return this.findById(id);
   }
+
+  async deleteByWalletAddress(walletAddress: string): Promise<boolean> {
+    const result = await this.repo.delete({ walletAddress });
+    return result.affected > 0;
+  }
 }

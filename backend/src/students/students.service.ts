@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { StudentRepository } from '../common/repositories/student.repository';
+import { RegistrationRequestRepository } from '../common/repositories/registration-request.repository';
 
 interface User {
   userId: string;
@@ -10,7 +11,10 @@ interface User {
 
 @Injectable()
 export class StudentsService {
-  constructor(private studentRepository: StudentRepository) {}
+  constructor(
+    private studentRepository: StudentRepository,
+    private registrationRequestRepository: RegistrationRequestRepository,
+  ) {}
 
   async findAll(user: User, schoolId?: string): Promise<{ data: any[] }> {
     let students: any[];
@@ -59,11 +63,22 @@ export class StudentsService {
     return { data: updated };
   }
 
-  async delete(id: string): Promise<{ message: string }> {
-    const deleted = await this.studentRepository.delete(id);
-    if (!deleted) {
+  async delete(id: string, user: User): Promise<{ message: string }> {
+    const student = await this.studentRepository.findById(id);
+    if (!student) {
       throw new NotFoundException('Không tìm thấy sinh viên');
     }
+
+    if (user.role === 'school_admin') {
+      if (user.schoolId !== student.schoolId) {
+        throw new ForbiddenException('Bạn chỉ có thể xóa sinh viên của trường mình');
+      }
+    }
+
+    await this.registrationRequestRepository.deleteByWalletAddress(student.walletAddress);
+    
+    await this.studentRepository.delete(id);
+    
     return { message: 'Xóa sinh viên thành công' };
   }
 }
