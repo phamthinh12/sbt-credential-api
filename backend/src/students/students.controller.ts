@@ -30,7 +30,7 @@ export class StudentsController {
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin', 'student')
-  @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #12) - Super Admin, School, hoặc chính Student' })
+  @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #12) - School Admin hoặc chính Student' })
   update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
     return this.studentsService.update(id, data, req.user);
   }

@@ -56,7 +56,6 @@ export class StudentsService {
     }
 
     const canUpdate = 
-      user.role === 'super_admin' ||
       user.userId === id ||
       (user.role === 'school_admin' && user.schoolId === student.schoolId);
 
