@@ -15,7 +15,7 @@ export class CredentialsController {
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('super_admin', 'school_admin')
-  @ApiOperation({ summary: 'Lấy danh sách văn bằng (API #15) - School xem của trường, Admin xem tất cả' })
+  @ApiOperation({ summary: 'Lấy danh sách văn bằng (API #16) - School xem của trường, Admin xem tất cả' })
   findAll(@Request() req: any) {
     return this.credentialsService.findAll(req.user);
   }
@@ -23,7 +23,7 @@ export class CredentialsController {
   @Get('student/:studentId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('student')
-  @ApiOperation({ summary: 'Lấy văn bằng theo student (API #21) - Student xem văn bằng của mình' })
+  @ApiOperation({ summary: 'Lấy văn bằng theo student (API #18) - Student xem văn bằng của mình' })
   findByStudent(@Param('studentId') studentId: string, @Request() req: any) {
     return this.credentialsService.findByStudentId(studentId, req.user);
   }
@@ -31,19 +31,19 @@ export class CredentialsController {
   @Get('school/:schoolId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin')
-  @ApiOperation({ summary: 'Lấy văn bằng theo school (API #22) - School Admin xem văn bằng của trường' })
+  @ApiOperation({ summary: 'Lấy văn bằng theo school (API #19) - School Admin xem văn bằng của trường' })
   findBySchool(@Param('schoolId') schoolId: string, @Request() req: any) {
     return this.credentialsService.findBySchoolId(schoolId, req.user);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Xem chi tiết văn bằng (API #17) - Public' })
+  @ApiOperation({ summary: 'Xem chi tiết văn bằng (API #20) - Public' })
   findOne(@Param('id') id: string) {
     return this.credentialsService.findOne(id);
   }
 
   @Get('verify/:code')
-  @ApiOperation({ summary: 'Get credential by verify code (public)' })
+  @ApiOperation({ summary: 'Verify credential by code (API #22) - Public' })
   findByVerifyCode(@Param('code') code: string) {
     return this.credentialsService.findByVerifyCode(code);
   }
@@ -51,7 +51,7 @@ export class CredentialsController {
   @Post('verify-file')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Verify credential integrity by PDF file' })
+  @ApiOperation({ summary: 'Verify credential integrity by PDF file (API #21)' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -73,7 +73,7 @@ export class CredentialsController {
   @Roles('school_admin')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Cấp văn bằng (API #16) - School Admin tạo văn bằng cho sinh viên, upload file PDF' })
+  @ApiOperation({ summary: 'Cấp văn bằng (API #17) - School Admin tạo văn bằng cho sinh viên, upload file PDF' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -101,7 +101,7 @@ export class CredentialsController {
   @Patch(':id/revoke')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('school_admin')
-  @ApiOperation({ summary: 'Thu hồi văn bằng (API #19) - School Admin thu hồi văn bằng của trường mình' })
+  @ApiOperation({ summary: 'Thu hồi văn bằng (API #23) - School Admin thu hồi văn bằng của trường mình' })
   revoke(@Param('id') id: string, @Request() req: any) {
     return this.credentialsService.revoke(id, req.user);
   }

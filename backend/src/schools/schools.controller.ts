@@ -11,13 +11,13 @@ export class SchoolsController {
     constructor(private schoolsService: SchoolsService) { }
 
     @Get()
-    @ApiOperation({ summary: 'Lấy danh sách tất cả trường (API #9)' })
+    @ApiOperation({ summary: 'Lấy danh sách tất cả trường (API #8)' })
     findAll() {
         return this.schoolsService.findAll();
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Xem chi tiết một trường (API #10)' })
+    @ApiOperation({ summary: 'Xem chi tiết một trường (API #9)' })
     async findOne(@Param('id') id: string) {
         return this.schoolsService.findOne(id);
     }
@@ -25,7 +25,7 @@ export class SchoolsController {
     @Put(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('super_admin', 'school_admin')
-    @ApiOperation({ summary: 'Cập nhật trường (API #11) - Super Admin hoặc School của trường đó' })
+    @ApiOperation({ summary: 'Cập nhật trường (API #10) - Super Admin hoặc School của trường đó' })
     update(@Param('id') id: string, @Body() data: { name?: string; email?: string }, @Request() req: any) {
         return this.schoolsService.update(id, data, req.user);
     }
@@ -33,7 +33,7 @@ export class SchoolsController {
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('super_admin')
-    @ApiOperation({ summary: 'Xóa trường (API #12) - Super Admin only' })
+    @ApiOperation({ summary: 'Xóa trường (API #11) - Super Admin only' })
     delete(@Param('id') id: string, @Request() req: any) {
         return this.schoolsService.delete(id, req.user);
     }
