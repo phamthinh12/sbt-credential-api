@@ -8,7 +8,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 @ApiTags('students')
 @Controller('students')
 export class StudentsController {
-  constructor(private studentsService: StudentsService) {}
+  constructor(private studentsService: StudentsService) { }
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -29,7 +29,7 @@ export class StudentsController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('super_admin', 'school_admin', 'student')
+  @Roles('school_admin', 'student')
   @ApiOperation({ summary: 'Cập nhật thông tin sinh viên (API #12) - Super Admin, School, hoặc chính Student' })
   update(@Param('id') id: string, @Body() data: any, @Request() req: any) {
     return this.studentsService.update(id, data, req.user);
