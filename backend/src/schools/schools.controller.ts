@@ -1,4 +1,4 @@
-import { Controller, Get, Delete, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Delete, Param, Body, Request, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { SchoolsService } from './schools.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -22,10 +22,18 @@ export class SchoolsController {
         return this.schoolsService.findOne(id);
     }
 
+    @Put(':id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('super_admin')
+    @ApiOperation({ summary: 'Cập nhật trường (API #11) - Super Admin only' })
+    update(@Param('id') id: string, @Body() data: { name?: string; email?: string }, @Request() req: any) {
+        return this.schoolsService.update(id, data, req.user);
+    }
+
     @Delete(':id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('super_admin')
-    @ApiOperation({ summary: 'Xóa trường (API #11) - Super Admin only' })
+    @ApiOperation({ summary: 'Xóa trường (API #12) - Super Admin only' })
     delete(@Param('id') id: string, @Request() req: any) {
         return this.schoolsService.delete(id, req.user);
     }
