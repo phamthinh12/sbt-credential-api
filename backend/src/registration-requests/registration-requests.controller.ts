@@ -25,12 +25,14 @@ export class RegistrationRequestsController {
   @ApiOperation({ summary: 'Lấy danh sách yêu cầu (API #4: super_admin xem school, API #5: school_admin xem student)' })
   @ApiQuery({ name: 'type', required: false, enum: ['school', 'student'] })
   @ApiQuery({ name: 'schoolId', required: false })
+  @ApiQuery({ name: 'schoolName', required: false })
   findAll(
     @Request() req: any,
     @Query('type') type?: 'school' | 'student',
     @Query('schoolId') schoolId?: string,
+    @Query('schoolName') schoolName?: string,
   ) {
-    return this.registrationRequestsService.findAll(type, schoolId, req.user);
+    return this.registrationRequestsService.findAll(type, schoolId, schoolName, req.user);
   }
 
   @Get(':id')

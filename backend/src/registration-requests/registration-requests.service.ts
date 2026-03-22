@@ -26,8 +26,8 @@ export class RegistrationRequestsService {
       createDto.walletAddress,
     );
 
-    if (existingRequest && existingRequest.status === 'pending') {
-      throw new BadRequestException('Địa chỉ ví này đã có yêu cầu đăng ký đang chờ xử lý');
+    if (existingRequest) {
+      throw new BadRequestException('Địa chỉ ví này đã có yêu cầu đăng ký trong hệ thống');
     }
 
     const request = await this.registrationRequestRepository.create({
@@ -48,7 +48,7 @@ export class RegistrationRequestsService {
     };
   }
 
-  async findAll(type?: 'school' | 'student', schoolId?: string, user?: User) {
+  async findAll(type?: 'school' | 'student', schoolId?: string, schoolName?: string, user?: User) {
     let requests = await this.registrationRequestRepository.findAll();
     
     if (type === 'school') {
@@ -70,6 +70,12 @@ export class RegistrationRequestsService {
       requests = requests.filter(r => r.schoolId === user.schoolId);
     } else if (schoolId && user?.role === 'super_admin') {
       requests = requests.filter(r => r.schoolId === schoolId);
+    }
+
+    if (schoolName) {
+      requests = requests.filter(r => 
+        r.schoolName?.toLowerCase().includes(schoolName.toLowerCase())
+      );
     }
     
     return { data: requests };
