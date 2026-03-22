@@ -45,6 +45,11 @@ export class StudentRepository {
     return result.affected > 0;
   }
 
+  async deleteBySchoolId(schoolId: string): Promise<number> {
+    const result = await this.repo.delete({ schoolId });
+    return result.affected || 0;
+  }
+
   async seedDefaultStudent(): Promise<void> {
     const existing = await this.findByWalletAddress('0xcd3B766CCDd6AE721141F452C550Ca635964ce71');
     if (existing) {

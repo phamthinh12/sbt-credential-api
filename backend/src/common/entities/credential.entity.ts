@@ -25,7 +25,7 @@ export class Credential {
   @Column({ type: 'uuid' })
   schoolId: string;
 
-  @ManyToOne(() => School, (school) => school.credentials, { nullable: true })
+  @ManyToOne(() => School, (school) => school.credentials, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'schoolId' })
   school: School;
 

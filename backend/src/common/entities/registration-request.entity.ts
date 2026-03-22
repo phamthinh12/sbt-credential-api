@@ -51,7 +51,7 @@ export class RegistrationRequest {
   @Column({ nullable: true })
   schoolId: string;
 
-  @ManyToOne(() => School, { nullable: true })
+  @ManyToOne(() => School, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'schoolId' })
   school: School;
 

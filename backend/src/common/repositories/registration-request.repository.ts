@@ -45,4 +45,9 @@ export class RegistrationRequestRepository {
     const result = await this.repo.delete({ walletAddress });
     return result.affected > 0;
   }
+
+  async deleteBySchoolId(schoolId: string): Promise<number> {
+    const result = await this.repo.delete({ schoolId });
+    return result.affected || 0;
+  }
 }
