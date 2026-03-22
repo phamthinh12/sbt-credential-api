@@ -251,9 +251,9 @@ curl -X POST https://sbt-credential-api.onrender.com/auth/login \
 
 ---
 
-## 3. SCHOOLS (2 APIs)
+## 3. SCHOOLS (4 APIs)
 
-### #8 - GET /schools - Get All Schools
+### #9 - GET /schools - Get All Schools
 - **URL:** `{{baseUrl}}/schools`
 - **Ai gọi:** Tất cả (để Student chọn trường khi đăng ký)
 - **Mô tả:** Lấy danh sách tất cả trường
@@ -273,7 +273,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #9 - GET /schools/:id - Get School by ID
+### #10 - GET /schools/:id - Get School by ID
 - **URL:** `{{baseUrl}}/schools/:id`
 - **Ai gọi:** Ai cũng được
 - **Mô tả:** Xem chi tiết một trường
@@ -295,9 +295,48 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
+### #11 - PUT /schools/:id - Update School
+- **URL:** `{{baseUrl}}/schools/:id`
+- **Ai gọi:** Super Admin hoặc School Admin (của trường đó)
+- **Mô tả:** Cập nhật thông tin trường
+- **Headers:** `Authorization: Bearer <token>`
+- **Path Parameters:** `id` - ID của trường
+- **Request Body:**
+```json
+{ "name": "Đại học Bách Khoa TP.HCM", "email": "new@email.com" }
+```
+- **Response:**
+```json
+{
+  "data": {
+    "id": "school-001",
+    "name": "Đại học Bách Khoa TP.HCM",
+    "email": "new@email.com",
+    "walletAddress": "0x...",
+    "isActive": true
+  }
+}
+```
+
+---
+
+### #12 - DELETE /schools/:id - Delete School
+- **URL:** `{{baseUrl}}/schools/:id`
+- **Ai gọi:** Super Admin only
+- **Mô tả:** Xóa trường và tất cả sinh viên, credentials của trường (CASCADE)
+- **Headers:** `Authorization: Bearer <token>` (Super Admin)
+- **Path Parameters:** `id` - ID của trường
+- **Response:**
+```json
+{ "message": "Xóa trường thành công" }
+```
+- **Lưu ý:** Khi xóa school, tất cả students và credentials của trường cũng bị xóa (ON DELETE CASCADE)
+
+---
+
 ## 4. STUDENTS (4 APIs)
 
-### #10 - GET /students - Get All Students
+### #13 - GET /students - Get All Students
 - **URL:** `{{baseUrl}}/students`
 - **Ai gọi:** School Admin
 - **Mô tả:** Lấy danh sách sinh viên của trường mình
@@ -323,7 +362,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #11 - GET /students/:id - Get Student by ID
+### #14 - GET /students/:id - Get Student by ID
 - **URL:** `{{baseUrl}}/students/:id`
 - **Ai gọi:** School Admin / Super Admin
 - **Mô tả:** Xem chi tiết một sinh viên
@@ -346,11 +385,11 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #12 - PUT /students/:id - Update Student
+### #15 - PUT /students/:id - Update Student
 - **URL:** `{{baseUrl}}/students/:id`
-- **Ai gọi:** School Admin
+- **Ai gọi:** School Admin (của trường sinh viên) hoặc chính Student
 - **Mô tả:** Cập nhật thông tin sinh viên
-- **Headers:** `Authorization: Bearer <token>` (School Admin)
+- **Headers:** `Authorization: Bearer <token>` (School Admin hoặc Student)
 - **Path Parameters:** `id` - ID của sinh viên
 - **Request Body:**
 ```json
@@ -371,11 +410,11 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #13 - DELETE /students/:id - Delete Student
+### #16 - DELETE /students/:id - Delete Student
 - **URL:** `{{baseUrl}}/students/:id`
-- **Ai gọi:** Super Admin only
+- **Ai gọi:** School Admin (chỉ sinh viên của trường mình)
 - **Mô tả:** Xóa sinh viên (CASCADE xóa credentials)
-- **Headers:** `Authorization: Bearer <token>` (Super Admin)
+- **Headers:** `Authorization: Bearer <token>` (School Admin)
 - **Path Parameters:** `id` - ID của sinh viên
 - **Response:**
 ```json
@@ -387,7 +426,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ## 5. CREDENTIALS (8 APIs)
 
-### #14 - GET /credentials - Get All Credentials
+### #17 - GET /credentials - Get All Credentials
 - **URL:** `{{baseUrl}}/credentials`
 - **Ai gọi:** School Admin / Super Admin
 - **Mô tả:** Lấy danh sách văn bằng
@@ -423,7 +462,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #15 - POST /credentials - Issue Credential
+### #18 - POST /credentials - Issue Credential
 - **URL:** `{{baseUrl}}/credentials`
 - **Ai gọi:** School Admin
 - **Mô tả:** Tạo văn bằng mới cho sinh viên (upload file PDF)
@@ -457,7 +496,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #16 - GET /credentials/student/:studentId - Get Credentials by Student
+### #19 - GET /credentials/student/:studentId - Get Credentials by Student
 - **URL:** `{{baseUrl}}/credentials/student/:studentId`
 - **Ai gọi:** Student (chỉ xem văn bằng của mình)
 - **Mô tả:** Lấy danh sách văn bằng của một sinh viên
@@ -478,7 +517,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #17 - GET /credentials/school/:schoolId - Get Credentials by School
+### #20 - GET /credentials/school/:schoolId - Get Credentials by School
 - **URL:** `{{baseUrl}}/credentials/school/:schoolId`
 - **Ai gọi:** School Admin
 - **Mô tả:** Lấy danh sách văn bằng của một trường
@@ -501,7 +540,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #18 - GET /credentials/:id - Get Credential by ID
+### #21 - GET /credentials/:id - Get Credential by ID
 - **URL:** `{{baseUrl}}/credentials/:id`
 - **Ai gọi:** Ai cũng được
 - **Mô tả:** Xem chi tiết một văn bằng
@@ -531,7 +570,7 @@ curl https://sbt-credential-api.onrender.com/schools
 
 ---
 
-### #19 - GET /credentials/verify/:code - Verify by Code (Public)
+### #22 - GET /credentials/verify/:code - Verify by Code (Public)
 - **URL:** `{{baseUrl}}/credentials/verify/:code`
 - **Ai gọi:** Tất cả (Public)
 - **Mô tả:** Verify văn bằng công khai bằng mã code
@@ -568,7 +607,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #20 - POST /credentials/verify-file - Verify File Integrity
+### #23 - POST /credentials/verify-file - Verify File Integrity
 - **URL:** `{{baseUrl}}/credentials/verify-file`
 - **Ai gọi:** Ai cũng được
 - **Mô tả:** Verify tính toàn vẹn của file PDF văn bằng
@@ -591,7 +630,7 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 
 ---
 
-### #21 - PATCH /credentials/:id/revoke - Revoke Credential
+### #24 - PATCH /credentials/:id/revoke - Revoke Credential
 - **URL:** `{{baseUrl}}/credentials/:id/revoke`
 - **Ai gọi:** School Admin (trường đã cấp văn bằng đó)
 - **Mô tả:** Thu hồi văn bằng (đổi status = 'revoked')
@@ -622,18 +661,20 @@ curl https://sbt-credential-api.onrender.com/credentials/verify/CRED-20240115-AB
 | 7 | PATCH | /registration-requests/:id/reject | Bearer | Super Admin, School Admin | Từ chối request |
 | 8 | GET | /schools | - | Public | Danh sách trường |
 | 9 | GET | /schools/:id | - | Public | Chi tiết trường |
-| 10 | GET | /students | Bearer | School Admin | Danh sách sinh viên |
-| 11 | GET | /students/:id | Bearer | School Admin | Chi tiết sinh viên |
-| 12 | PUT | /students/:id | Bearer | School Admin | Cập nhật sinh viên |
-| 13 | DELETE | /students/:id | Bearer | Super Admin | Xóa sinh viên (CASCADE) |
-| 14 | GET | /credentials | Bearer | School Admin, Super Admin | Danh sách văn bằng |
-| 15 | POST | /credentials | Bearer | School Admin | Tạo văn bằng (upload PDF) |
-| 16 | GET | /credentials/student/:id | Bearer | Student | Văn bằng của sinh viên |
-| 17 | GET | /credentials/school/:id | Bearer | School Admin | Văn bằng của trường |
-| 18 | GET | /credentials/:id | - | Public | Chi tiết văn bằng |
-| 19 | GET | /credentials/verify/:code | - | Public | Verify bằng mã code |
-| 20 | POST | /credentials/verify-file | - | Public | Verify file PDF |
-| 21 | PATCH | /credentials/:id/revoke | Bearer | School Admin | Thu hồi văn bằng |
+| 10 | PUT | /schools/:id | Bearer | Super Admin, School Admin (own) | Cập nhật trường |
+| 11 | DELETE | /schools/:id | Bearer | Super Admin | Xóa trường (CASCADE) |
+| 12 | GET | /students | Bearer | School Admin | Danh sách sinh viên |
+| 13 | GET | /students/:id | Bearer | School Admin | Chi tiết sinh viên |
+| 14 | PUT | /students/:id | Bearer | School Admin, Student (self) | Cập nhật sinh viên |
+| 15 | DELETE | /students/:id | Bearer | School Admin (own school) | Xóa sinh viên (CASCADE) |
+| 16 | GET | /credentials | Bearer | School Admin, Super Admin | Danh sách văn bằng |
+| 17 | POST | /credentials | Bearer | School Admin | Tạo văn bằng (upload PDF) |
+| 18 | GET | /credentials/student/:id | Bearer | Student | Văn bằng của sinh viên |
+| 19 | GET | /credentials/school/:id | Bearer | School Admin | Văn bằng của trường |
+| 20 | GET | /credentials/:id | - | Public | Chi tiết văn bằng |
+| 21 | GET | /credentials/verify/:code | - | Public | Verify bằng mã code |
+| 22 | POST | /credentials/verify-file | - | Public | Verify file PDF |
+| 23 | PATCH | /credentials/:id/revoke | Bearer | School Admin | Thu hồi văn bằng |
 
 ---
 
