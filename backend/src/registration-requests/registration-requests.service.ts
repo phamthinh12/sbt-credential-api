@@ -134,6 +134,7 @@ export class RegistrationRequestsService {
     } else if (request.type === 'school') {
       const school = await this.schoolRepository.create({
         name: request.schoolName || request.name || 'Trường mới',
+        email: request.email,
         walletAddress: request.walletAddress,
         isActive: true,
       });

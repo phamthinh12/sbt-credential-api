@@ -6,6 +6,8 @@ workspace:
 cloudResources:
   collections:
     ..\postman\collections\Credential Core API: 50926416-70765c34-7c44-4266-b8f0-75027cfd2ab6
+  environments:
+    ..\postman\environments\New Environment.environment.yaml: a720d0c3-9ea6-4814-8a62-28748feadb43
 
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:

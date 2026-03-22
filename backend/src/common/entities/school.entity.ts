@@ -11,6 +11,9 @@ export class School {
   name: string;
 
   @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
   walletAddress: string;
 
   @Column({ default: true })
