@@ -489,10 +489,18 @@ curl https://sbt-credential-api.onrender.com/schools
   "createdAt": "2024-03-01"
 }
 ```
-- **Lưu ý:** 
+- **Validation:**
+  - Check fileHash đã tồn tại trong DB chưa → Nếu rồi trả lỗi 400
   - File được upload lên IPFS (nếu configured)
   - Hash SHA256 của file được tính toán
   - Credential được mint lên blockchain (async)
+- **Error (file đã tồn tại):**
+```json
+{
+  "statusCode": 400,
+  "message": "File PDF này đã được sử dụng cho văn bằng khác. Mã xác minh: CRED-xxx, Sinh viên: Nguyễn Văn A"
+}
+```
 
 ---
 

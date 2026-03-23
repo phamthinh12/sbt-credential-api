@@ -78,6 +78,15 @@ export class CredentialsService {
     }
 
     const fileHash = crypto.createHash('sha256').update(file.buffer).digest('hex');
+
+    const existingCredential = await this.credentialRepository.findByFileHash(fileHash);
+    if (existingCredential) {
+      throw new BadRequestException(
+        `File PDF này đã được sử dụng cho văn bằng khác. ` +
+        `Mã xác minh: ${existingCredential.verifyCode}, ` +
+        `Sinh viên: ${existingCredential.student?.name || existingCredential.studentId}`
+      );
+    }
     
     let ipfsResult = null;
     let ipfsHash = null;
