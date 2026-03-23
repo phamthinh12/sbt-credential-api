@@ -214,6 +214,11 @@ export class CredentialsService {
       .update(fileBuffer)
       .digest('hex');
 
+    console.log('[VERIFY-FILE] fileBuffer length:', fileBuffer?.length);
+    console.log('[VERIFY-FILE] uploadedFileHash:', uploadedFileHash);
+    console.log('[VERIFY-FILE] stored fileHash:', credential.fileHash);
+    console.log('[VERIFY-FILE] Hashes match:', uploadedFileHash === credential.fileHash);
+
     const isValid = uploadedFileHash === credential.fileHash;
 
     return {

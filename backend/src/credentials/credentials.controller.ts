@@ -65,6 +65,10 @@ export class CredentialsController {
     @Body('verifyCode') code: string,
     @UploadedFile() file: any,
   ) {
+    console.log('[VERIFY-FILE] Received request');
+    console.log('[VERIFY-FILE] verifyCode:', code);
+    console.log('[VERIFY-FILE] file:', file ? { originalname: file.originalname, size: file.size, mimetype: file.mimetype } : 'NO FILE');
+    console.log('[VERIFY-FILE] file.buffer length:', file?.buffer?.length);
     return this.credentialsService.verifyFileIntegrity(code, file.buffer);
   }
 
