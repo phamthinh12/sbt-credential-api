@@ -4,6 +4,7 @@ import { StudentRepository } from '../common/repositories/student.repository';
 import { IpfsService } from '../blockchain/ipfs.service';
 import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
 import { SimpleQueueService } from '../queue/simple-queue.service';
+import { WatcherNotifyService } from '../common/services/watcher-notify.service';
 import { CredentialStatus } from '../common/entities/credential.entity';
 import * as crypto from 'crypto';
 
@@ -22,6 +23,7 @@ export class CredentialsService {
     private ipfsService: IpfsService,
     private blockchainService: BlockchainService,
     private simpleQueueService: SimpleQueueService,
+    private watcherNotify: WatcherNotifyService,
   ) { }
 
   async findAll(user?: User): Promise<any> {
@@ -129,6 +131,10 @@ export class CredentialsService {
 
     const student = await this.studentRepository.findById(body.studentId);
 
+    if (!student?.walletAddress) {
+      console.warn(`[Credential] Student ${body.studentId} không có walletAddress - không thể mint lên blockchain`);
+    }
+
     const mintParams: MintDiplomaParams = {
       recipient: student?.walletAddress || '',
       studentId: student?.studentCode || body.studentId,
@@ -140,7 +146,19 @@ export class CredentialsService {
       remarks: body.description || '',
     };
 
-    this.simpleQueueService.addMintJob(credential.id, mintParams);
+    if (student?.walletAddress) {
+      this.simpleQueueService.addMintJob(credential.id, mintParams);
+    } else {
+      await this.credentialRepository.update(credential.id, { status: CredentialStatus.ISSUED });
+      console.warn(`[Credential] Credential ${credential.id} created as ISSUED (no wallet to mint)`);
+    }
+
+    this.watcherNotify.notifyCredentialIssued({
+      studentId: body.studentId,
+      credentialId: credential.id,
+      name: body.name,
+      status: 'pending',
+    }).catch(() => {});
 
     return {
       id: credential.id,
@@ -175,6 +193,8 @@ export class CredentialsService {
       status: CredentialStatus.REVOKED,
       updatedAt: now 
     });
+
+    this.watcherNotify.notifyCredentialStatusChanged(id, 'revoked').catch(() => {});
 
     return { 
       success: true, 

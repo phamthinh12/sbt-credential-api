@@ -10,6 +10,7 @@ import { SchoolsModule } from './schools/schools.module';
 import { RegistrationRequestsModule } from './registration-requests/registration-requests.module';
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { IpfsModule } from './blockchain/ipfs.module';
+import { WebhookModule } from './webhook/webhook.module';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { IpfsModule } from './blockchain/ipfs.module';
     CredentialsModule,
     EventsModule,
     SchoolsModule,
-    RegistrationRequestsModule],
+    RegistrationRequestsModule,
+    WebhookModule],
   controllers: [AppController],
 })
 export class AppModule { }

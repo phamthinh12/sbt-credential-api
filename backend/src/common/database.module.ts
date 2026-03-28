@@ -15,6 +15,7 @@ import {
   CredentialRepository,
   RegistrationRequestRepository,
 } from './repositories';
+import { WatcherNotifyService } from './services/watcher-notify.service';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import {
     StudentRepository,
     CredentialRepository,
     RegistrationRequestRepository,
+    WatcherNotifyService,
   ],
   exports: [
     UserRepository,
@@ -58,6 +60,7 @@ import {
     StudentRepository,
     CredentialRepository,
     RegistrationRequestRepository,
+    WatcherNotifyService,
     TypeOrmModule,
   ],
 })

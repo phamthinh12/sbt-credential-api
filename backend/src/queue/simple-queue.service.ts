@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
 import { CredentialRepository } from '../common/repositories/credential.repository';
+import { WatcherNotifyService } from '../common/services/watcher-notify.service';
 import { CredentialStatus } from '../common/entities/credential.entity';
 
 interface QueuedMintJob {
@@ -21,6 +22,7 @@ export class SimpleQueueService implements OnModuleInit {
   constructor(
     private blockchainService: BlockchainService,
     private credentialRepository: CredentialRepository,
+    private watcherNotify: WatcherNotifyService,
   ) {}
 
   onModuleInit() {
@@ -54,8 +56,15 @@ export class SimpleQueueService implements OnModuleInit {
 
     try {
       this.logger.log(`Processing job: ${job.credentialId}, attempt: ${job.attempts + 1}`);
-      
+      this.logger.log(`Mint params - recipient: ${job.data.recipient}, studentId: ${job.data.studentId}`);
+
+      if (!job.data.recipient) {
+        throw new Error('Recipient wallet address is empty - cannot mint on blockchain');
+      }
+
       await this.credentialRepository.update(job.credentialId, { status: CredentialStatus.ISSUED });
+
+      this.watcherNotify.notifyCredentialStatusChanged(job.credentialId, 'issued').catch(() => {});
 
       const result = await this.blockchainService.issueDiploma(job.data);
 
@@ -65,6 +74,9 @@ export class SimpleQueueService implements OnModuleInit {
         tokenId: String(result.tokenId),
         issuedAt: new Date(),
       });
+
+      this.watcherNotify.notifyCredentialStatusChanged(job.credentialId, 'confirmed').catch(() => {});
+      this.watcherNotify.notifyTxConfirmed(job.credentialId, result.txHash, String(result.tokenId)).catch(() => {});
 
       this.queue.shift();
       this.logger.log(`Job completed: ${job.credentialId}, txHash: ${result.txHash}`);

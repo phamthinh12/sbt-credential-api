@@ -5,6 +5,7 @@ import { SchoolRepository } from '../common/repositories/school.repository';
 import { RegistrationRequestType, RegistrationRequestStatus } from '../common/entities/registration-request.entity';
 import { StudentStatus } from '../common/entities/student.entity';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { WatcherNotifyService } from '../common/services/watcher-notify.service';
 
 interface User {
   userId: string;
@@ -19,6 +20,7 @@ export class RegistrationRequestsService {
     private readonly registrationRequestRepository: RegistrationRequestRepository,
     private readonly studentRepository: StudentRepository,
     private readonly schoolRepository: SchoolRepository,
+    private readonly watcherNotify: WatcherNotifyService,
   ) {}
 
   async create(createDto: CreateRegistrationDto) {
@@ -41,6 +43,13 @@ export class RegistrationRequestsService {
       studentCode: createDto.studentCode,
       schoolId: createDto.schoolId,
     });
+
+    this.watcherNotify.notifyRegistrationUpdated({
+      requestId: request.id,
+      type: createDto.type,
+      name: createDto.name || createDto.schoolName || '',
+      status: 'pending',
+    }).catch(() => {});
 
     return {
       data: request,
@@ -147,6 +156,13 @@ export class RegistrationRequestsService {
       });
     }
 
+    this.watcherNotify.notifyRegistrationUpdated({
+      requestId: id,
+      type: request.type,
+      name: request.name || request.schoolName || '',
+      status: 'approved',
+    }).catch(() => {});
+
     return {
       ...result,
       data: await this.registrationRequestRepository.findById(id),
@@ -177,6 +193,13 @@ export class RegistrationRequestsService {
     }
 
     await this.registrationRequestRepository.updateStatus(id, RegistrationRequestStatus.REJECTED);
+
+    this.watcherNotify.notifyRegistrationUpdated({
+      requestId: id,
+      type: request.type,
+      name: request.name || request.schoolName || '',
+      status: 'rejected',
+    }).catch(() => {});
 
     return {
       success: true,
