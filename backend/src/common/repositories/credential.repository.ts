@@ -34,6 +34,10 @@ export class CredentialRepository {
     return this.repo.findOne({ where: { fileHash }, relations: ['student', 'school'] });
   }
 
+  async findByTxHash(txHash: string): Promise<Credential | null> {
+    return this.repo.findOne({ where: { txHash }, relations: ['student', 'school'] });
+  }
+
   async create(data: Partial<Credential>): Promise<Credential> {
     const credential = this.repo.create(data);
     return this.repo.save(credential);

@@ -48,6 +48,12 @@ export class CredentialsController {
     return this.credentialsService.findByVerifyCode(code);
   }
 
+  @Get('verify-by-txhash/:txHash')
+  @ApiOperation({ summary: 'Verify credential by transaction hash (API #24) - Public' })
+  findByTxHash(@Param('txHash') txHash: string) {
+    return this.credentialsService.findByTxHash(txHash);
+  }
+
   @Post('verify-file')
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')

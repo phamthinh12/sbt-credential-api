@@ -214,6 +214,20 @@ export class CredentialsService {
     return credential;
   }
 
+  async findByTxHash(txHash: string): Promise<any> {
+    const credential = await this.credentialRepository.findByTxHash(txHash);
+
+    if (!credential) {
+      throw new NotFoundException('Không tìm thấy văn bằng với transaction hash này');
+    }
+
+    return {
+      studentName: credential.student?.name,
+      credentialName: credential.name,
+      issuedAt: credential.issuedAt,
+    };
+  }
+
   async verifyFileIntegrity(code: string, fileBuffer: Buffer) {
     const credential = await this.findByVerifyCode(code);
 
