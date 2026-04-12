@@ -19,7 +19,7 @@ export class QueueController {
   @ApiOperation({ summary: 'Kiểm tra job status của credential' })
   async getJobStatus(@Param('credentialId') credentialId: string) {
     try {
-      const jobs = await this.mintQueue.getJobs();
+      const jobs = await this.mintQueue.getJobs(['waiting', 'active', 'delayed', 'failed', 'completed']);
       
       const relevantJob = jobs.find(job => job.data.credentialId === credentialId);
       
@@ -31,12 +31,12 @@ export class QueueController {
         };
       }
 
+      const state = await relevantJob.getState();
+
       return {
         credentialId,
         jobId: relevantJob.id,
-        status: relevantJob.isCompleted() ? 'completed' : 
-               relevantJob.isFailed() ? 'failed' : 
-               relevantJob.isActive() ? 'active' : 'waiting',
+        status: state,
         attempts: relevantJob.attemptsMade,
         failedReason: relevantJob.failedReason,
         processedOn: relevantJob.processedOn,

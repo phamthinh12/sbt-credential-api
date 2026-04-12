@@ -11,6 +11,7 @@ import { RegistrationRequestsModule } from './registration-requests/registration
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { IpfsModule } from './blockchain/ipfs.module';
 import { WebhookModule } from './webhook/webhook.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { WebhookModule } from './webhook/webhook.module';
     DatabaseModule,
     BlockchainModule,
     IpfsModule,
+    QueueModule,
     AuthModule,
     StudentsModule,
     CredentialsModule,

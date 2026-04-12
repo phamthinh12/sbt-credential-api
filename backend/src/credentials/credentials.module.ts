@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { CredentialsController } from './credentials.controller';
 import { CredentialsService } from './credentials.service';
 import { AuthModule } from '../auth/auth.module';
-import { SimpleQueueModule } from '../queue/simple-queue.module';
+import { QueueModule } from '../queue/queue.module';
 import { DatabaseModule } from '../common/database.module';
 
 @Module({
   imports: [
     AuthModule,
-    SimpleQueueModule,
+    QueueModule,
     DatabaseModule,
   ],
   controllers: [CredentialsController],

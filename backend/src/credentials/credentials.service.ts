@@ -3,7 +3,7 @@ import { CredentialRepository } from '../common/repositories/credential.reposito
 import { StudentRepository } from '../common/repositories/student.repository';
 import { IpfsService } from '../blockchain/ipfs.service';
 import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
-import { SimpleQueueService } from '../queue/simple-queue.service';
+import { MintQueueService } from '../queue/mint-queue.service';
 import { WatcherNotifyService } from '../common/services/watcher-notify.service';
 import { CredentialStatus } from '../common/entities/credential.entity';
 import * as crypto from 'crypto';
@@ -22,7 +22,7 @@ export class CredentialsService {
     private studentRepository: StudentRepository,
     private ipfsService: IpfsService,
     private blockchainService: BlockchainService,
-    private simpleQueueService: SimpleQueueService,
+    private mintQueueService: MintQueueService,
     private watcherNotify: WatcherNotifyService,
   ) { }
 
@@ -147,7 +147,12 @@ export class CredentialsService {
     };
 
     if (student?.walletAddress) {
-      this.simpleQueueService.addMintJob(credential.id, mintParams);
+      try {
+        await this.mintQueueService.addMintJob(credential.id, mintParams);
+      } catch (error: any) {
+        // Keep credential in pending state; mint will be retried once queue/redis is available.
+        console.error(`[Credential] Failed to queue mint job for ${credential.id}: ${error?.message || error}`);
+      }
     } else {
       await this.credentialRepository.update(credential.id, { status: CredentialStatus.ISSUED });
       console.warn(`[Credential] Credential ${credential.id} created as ISSUED (no wallet to mint)`);

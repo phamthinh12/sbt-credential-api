@@ -1,21 +1,11 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
-import { BlockchainService, MintDiplomaParams } from '../blockchain/blockchain.service';
-import { MockDatabaseService } from '../common/services/mock-database.service';
-
-export interface MintCredentialJobData {
-  credentialId: string;
-  studentId: string;
-  studentName: string;
-  degreeTitle: string;
-  recipientWallet: string;
-  ipfsCID?: string;
-  documentHash: string;
-  graduationYear: number;
-  schoolId: string;
-  remarks?: string;
-}
+import { BlockchainService } from '../blockchain/blockchain.service';
+import { CredentialRepository } from '../common/repositories/credential.repository';
+import { WatcherNotifyService } from '../common/services/watcher-notify.service';
+import { CredentialStatus } from '../common/entities/credential.entity';
+import { MintCredentialJobData } from './mint-queue.service';
 
 @Processor('credential-mint', {
   concurrency: 5,
@@ -25,52 +15,43 @@ export class CredentialProcessor extends WorkerHost {
 
   constructor(
     private blockchainService: BlockchainService,
-    private mockDb: MockDatabaseService,
+    private credentialRepository: CredentialRepository,
+    private watcherNotify: WatcherNotifyService,
   ) {
     super();
     this.logger.log('CredentialProcessor initialized');
   }
 
   async process(job: Job<MintCredentialJobData>): Promise<any> {
-    const { 
-      credentialId, 
-      studentId, 
-      studentName, 
-      degreeTitle, 
-      recipientWallet,
-      ipfsCID,
-      documentHash, 
-      graduationYear,
-      remarks 
-    } = job.data;
+    const { credentialId, mintParams } = job.data;
 
     this.logger.log(`Processing mint job for credential: ${credentialId}`);
 
     try {
-      // Update status to "issued" - token is being minted
-      this.mockDb.updateCredential(credentialId, { status: 'issued' as any });
+      if (!mintParams?.recipient) {
+        throw new Error('Recipient wallet address is empty - cannot mint on blockchain');
+      }
+
+      await this.credentialRepository.update(credentialId, { status: CredentialStatus.ISSUED });
+      this.watcherNotify.notifyCredentialStatusChanged(credentialId, 'issued').catch(() => {});
 
       // Call blockchain to mint
-      const result = await this.blockchainService.issueDiploma({
-        recipient: recipientWallet,
-        studentId: studentId,
-        studentName: studentName,
-        degreeTitle: degreeTitle,
-        ipfsCID: ipfsCID || '',
-        documentHash: documentHash,
-        graduationYear: graduationYear,
-        remarks: remarks || '',
-      });
+      const result = await this.blockchainService.issueDiploma(mintParams);
 
       // Update credential with txHash and tokenId, set status to "confirmed"
-      this.mockDb.updateCredential(credentialId, {
-        status: 'confirmed' as any,
+      await this.credentialRepository.update(credentialId, {
+        status: CredentialStatus.CONFIRMED,
         txHash: result.txHash,
         tokenId: String(result.tokenId),
         issuedAt: new Date(),
       });
 
       this.logger.log(`Credential ${credentialId} minted successfully - TokenID: ${result.tokenId}`);
+
+      this.watcherNotify.notifyCredentialStatusChanged(credentialId, 'confirmed').catch(() => {});
+      this.watcherNotify
+        .notifyTxConfirmed(credentialId, result.txHash, String(result.tokenId))
+        .catch(() => {});
 
       return {
         success: true,
@@ -80,12 +61,13 @@ export class CredentialProcessor extends WorkerHost {
       };
     } catch (error: any) {
       this.logger.error(`Failed to mint credential ${credentialId}: ${error?.message || 'Unknown error'}`);
-      
-      // Update status to indicate failure
-      this.mockDb.updateCredential(credentialId, { 
-        status: 'pending' as any,
-        // Store error info for debugging
-      });
+
+      const maxAttempts = job.opts.attempts ?? 1;
+      const currentAttempt = job.attemptsMade + 1;
+      if (currentAttempt >= maxAttempts) {
+        await this.credentialRepository.update(credentialId, { status: CredentialStatus.PENDING });
+        this.watcherNotify.notifyCredentialStatusChanged(credentialId, 'pending').catch(() => {});
+      }
 
       throw error;
     }
