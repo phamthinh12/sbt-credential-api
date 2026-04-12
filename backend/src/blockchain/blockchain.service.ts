@@ -97,9 +97,37 @@ export class BlockchainService {
         txHash: tx.hash,
         tokenId: tokenId,
       };
-    } catch (error) {
-      this.logger.error(`Failed to issue diploma: ${error.message}`);
+    } catch (error: any) {
+      const decoded = this.tryDecodeRevert(error);
+      if (decoded) {
+        (error as any).revert = decoded;
+        const argsText = decoded.args?.length ? ` args=${decoded.args.map(a => String(a)).join(',')}` : '';
+        this.logger.error(`Failed to issue diploma: revert ${decoded.name}${argsText}`);
+      } else {
+        this.logger.error(`Failed to issue diploma: ${error?.message || error}`);
+      }
       throw error;
+    }
+  }
+
+  private tryDecodeRevert(error: any): { name: string; args: any[] } | null {
+    try {
+      const data =
+        error?.data ??
+        error?.error?.data ??
+        error?.info?.error?.data ??
+        error?.reason?.data ??
+        error?.receipt?.revertReason ??
+        undefined;
+
+      if (!data || typeof data !== 'string' || !data.startsWith('0x')) return null;
+
+      const parsed = this.contract?.interface?.parseError(data);
+      if (!parsed) return null;
+
+      return { name: parsed.name, args: Array.from(parsed.args || []) };
+    } catch {
+      return null;
     }
   }
 

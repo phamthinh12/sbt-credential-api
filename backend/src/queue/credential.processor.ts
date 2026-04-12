@@ -1,5 +1,5 @@
 import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
+import { Job, UnrecoverableError } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { CredentialRepository } from '../common/repositories/credential.repository';
@@ -61,6 +61,15 @@ export class CredentialProcessor extends WorkerHost {
       };
     } catch (error: any) {
       this.logger.error(`Failed to mint credential ${credentialId}: ${error?.message || 'Unknown error'}`);
+
+      const revertName = error?.revert?.name;
+      if (
+        revertName &&
+        ['DuplicateDocument', 'InvalidRecipient', 'InvalidStudentId', 'InvalidDocumentHash'].includes(revertName)
+      ) {
+        // Deterministic failures: don't waste retries
+        throw new UnrecoverableError(`Unrecoverable revert ${revertName}: ${error?.message || ''}`);
+      }
 
       const maxAttempts = job.opts.attempts ?? 1;
       const currentAttempt = job.attemptsMade + 1;
